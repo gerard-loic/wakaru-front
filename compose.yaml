@@ -1,0 +1,25 @@
+services:
+  wakaru-front:
+    # Option A (simple) : l'image est construite sur place à partir du Dockerfile.
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: wakaru-front:latest
+    # Option B (registry) : commente le bloc `build` ci-dessus et décommente :
+    # image: registry.example.com/wakaru-front:1.0.0
+    container_name: wakaru-front
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-network"
+      - "traefik.http.routers.wakaru-front.rule=Host(`wakaru.fr`)"
+      - "traefik.http.routers.wakaru-front.entrypoints=https"
+      - "traefik.http.routers.wakaru-front.tls=true"
+      # - "traefik.http.routers.wakaru-front.tls.certresolver=letsencrypt"
+      - "traefik.http.services.wakaru-front.loadbalancer.server.port=80"
+    networks:
+      - traefik-network
+
+networks:
+  traefik-network:
+    external: true

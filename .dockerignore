@@ -1,0 +1,13 @@
+node_modules
+dist
+build
+.git
+.plugins
+.opencode-skills
+.claude*
+.cache
+.vite
+*.log
+*-debug.log*
+.env*
+.tmp-*
