@@ -205,12 +205,12 @@ export function Practice({
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-ink/90 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl bg-panel border border-line max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-ink/90 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4">
+      <div className="w-full max-w-2xl bg-panel border border-line max-h-full sm:max-h-[90dvh] overflow-y-auto">
         {/* header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-line sticky top-0 bg-panel z-10">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-line sticky top-0 bg-panel z-10">
           <div className="flex items-center gap-3">
-            <span className="jp text-ember text-xl">練習</span>
+            <span className="jp text-ember text-xl shrink-0">練習</span>
             <div>
               <div className="display font-800 text-lg leading-none">
                 M'exercer
@@ -235,7 +235,7 @@ export function Practice({
           </button>
         </div>
 
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {configStep && error && (
             <ErrorBox message={error} onRetry={reload} />
           )}

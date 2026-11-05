@@ -16,7 +16,7 @@ export function SectionHead({
       <div className="flex items-end gap-4">
         <div>
           <div className="jp text-fog text-sm mb-1">{jp}</div>
-          <h1 className="display text-4xl font-800 tracking-tight leading-none">
+          <h1 className="display text-3xl sm:text-4xl font-800 tracking-tight leading-none">
             {title}
           </h1>
         </div>
@@ -26,7 +26,7 @@ export function SectionHead({
           </span>
         )}
       </div>
-      {children}
+      {children && <div className="w-full md:w-auto">{children}</div>}
     </div>
   )
 }

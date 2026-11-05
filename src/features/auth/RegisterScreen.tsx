@@ -6,6 +6,7 @@ import {
   AuthError,
   AuthLayout,
   Field,
+  MailingConsent,
   SubmitButton,
 } from "@/features/auth/AuthLayout"
 
@@ -39,6 +40,7 @@ export function RegisterScreen({ onEnter }: { onEnter: () => void }) {
       firstName: field("first_name"),
       lastName: field("last_name"),
       password,
+      mailingAllowed: data.get("is_mailing_allowed") === "on",
       captchaToken,
     })
     if (ok) onEnter()
@@ -115,6 +117,7 @@ export function RegisterScreen({ onEnter }: { onEnter: () => void }) {
             .
           </span>
         </label>
+        <MailingConsent />
         <Turnstile ref={captcha} onToken={setCaptchaToken} />
       </div>
 

@@ -1,4 +1,5 @@
 import { useState, type FormEvent, type ReactNode } from "react"
+import { Link } from "react-router-dom"
 import { Logo } from "@/components/Logo"
 import { AboutModal } from "@/layout/AboutModal"
 
@@ -21,7 +22,7 @@ export function AuthLayout({
   const openAbout = () => setAboutOpen(true)
 
   return (
-    <div className="h-full grid lg:grid-cols-[1.1fr_1fr]">
+    <div className="min-h-dvh grid lg:grid-cols-[1.1fr_1fr]">
       {/* Brand panel */}
       <div className="relative hidden lg:flex flex-col justify-between p-12 bg-wakaru overflow-hidden">
         <div
@@ -53,7 +54,7 @@ export function AuthLayout({
       </div>
 
       {/* Form panel */}
-      <div className="flex items-center justify-center p-8 overflow-y-auto">
+      <div className="flex items-center justify-center p-4 sm:p-8 overflow-y-auto">
         <form
           onSubmit={(e: FormEvent<HTMLFormElement>) => {
             e.preventDefault()
@@ -149,5 +150,43 @@ export function SubmitButton({
     >
       {children}
     </button>
+  )
+}
+
+/** Lien présenté comme le bouton principal des écrans d'authentification. */
+export function ActionLink({ to, children }: { to: string; children: ReactNode }) {
+  return (
+    <Link
+      to={to}
+      className="mono text-sm uppercase tracking-[0.1em] block text-center w-full mt-8 py-3.5 bg-ember text-ink font-600 transition-all hover:bg-ember-soft"
+    >
+      {children}
+    </Link>
+  )
+}
+
+/**
+ * Consentement à l'envoi d'e-mails (`is_mailing_allowed`), à lire dans le
+ * formulaire avec `data.get("is_mailing_allowed") === "on"`. Facultatif et
+ * décoché par défaut : le consentement doit rester un geste volontaire.
+ */
+export function MailingConsent({
+  defaultChecked = false,
+}: {
+  defaultChecked?: boolean
+}) {
+  return (
+    <label className="flex items-start gap-3 text-sm text-fog cursor-pointer">
+      <input
+        name="is_mailing_allowed"
+        type="checkbox"
+        defaultChecked={defaultChecked}
+        className="mt-0.5 size-4 shrink-0 accent-ember cursor-pointer"
+      />
+      <span>
+        J'accepte de recevoir des e-mails de Wakaru, notamment quand un nouveau
+        thème est disponible.
+      </span>
+    </label>
   )
 }

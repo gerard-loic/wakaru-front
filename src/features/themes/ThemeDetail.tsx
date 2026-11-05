@@ -104,7 +104,7 @@ export function ThemeDetail({
     >
       <BackBar onBack={onBack} label="Thèmes" />
       <div className="relative border border-line overflow-hidden bg-ink mb-8">
-        <div className="relative h-56 sm:h-72 bg-panel-2 lg:absolute lg:inset-y-0 lg:right-0 lg:h-auto lg:w-[64%]">
+        <div className="relative h-56 sm:h-72 bg-panel-2 xl:absolute xl:inset-y-0 xl:right-0 xl:h-auto xl:w-[64%]">
           {theme.image ? (
             <img
               src={theme.image}
@@ -116,14 +116,14 @@ export function ThemeDetail({
               課
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 via-35% to-transparent lg:bg-gradient-to-r lg:via-ink/50 lg:via-30%" />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 via-35% to-transparent xl:bg-gradient-to-r xl:via-ink/50 xl:via-30%" />
           {theme.imageCredit && (
             <span className="absolute bottom-2 right-3 max-w-[60%] truncate bg-ink/60 px-1.5 py-0.5 mono text-[9px] text-fog">
               © {theme.imageCredit}
             </span>
           )}
         </div>
-        <div className="relative flex flex-col gap-6 p-6 lg:p-8 lg:w-[48%] lg:min-h-96">
+        <div className="relative flex flex-col gap-6 p-6 xl:p-8 xl:w-[48%] xl:min-h-96">
           <div>
             <div className="mono text-[11px] uppercase tracking-[0.16em] text-ember mb-2">
               Thème{theme.date && ` · ${formatDate(theme.date)}`}

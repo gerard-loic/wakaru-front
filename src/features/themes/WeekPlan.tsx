@@ -91,14 +91,14 @@ export function WeekPlan({
                   {day.map((task, j) => {
                     const meta = PLAN_META[planKind(task)]
                     return (
-                      <div key={j} className="flex items-center gap-3 px-4 py-3">
+                      <div key={j} className="flex flex-wrap items-center gap-3 px-4 py-3 [&>:last-child]:ml-auto">
                         <span
                           className="jp text-lg w-9 h-9 shrink-0 grid place-items-center border border-line text-ember"
                           title={meta.label}
                         >
                           {meta.glyph}
                         </span>
-                        <div className="flex-1 min-w-0">
+                        <div className="flex-1 min-w-32">
                           <div className="text-sm leading-snug">{task.name}</div>
                           <div className="mono text-[10px] text-fog truncate">
                             {meta.label}

@@ -6,6 +6,7 @@ interface UserRecord {
   email: string
   first_name: string
   last_name: string
+  is_mailing_allowed?: boolean | null
   level?: { uid: string; name: string } | null
 }
 
@@ -20,6 +21,8 @@ export interface CurrentUser {
   email: string
   /** Nom du niveau (`levels.name`), ou `null` s'il est inconnu. */
   level: string | null
+  /** Accepte de recevoir des e-mails (`is_mailing_allowed`). */
+  mailingAllowed: boolean
 }
 
 /**
@@ -56,5 +59,6 @@ function toCurrentUser(r: UserRecord): CurrentUser {
     initial: (displayName[0] ?? "?").toUpperCase(),
     email: r.email,
     level: r.level?.name ?? null,
+    mailingAllowed: r.is_mailing_allowed === true,
   }
 }

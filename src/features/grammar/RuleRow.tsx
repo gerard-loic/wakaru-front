@@ -17,8 +17,8 @@ export function RuleRow({
       className="w-full text-left border border-line bg-panel hover:border-ember transition-colors p-4 flex items-center gap-4 group cursor-pointer"
     >
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2.5">
-          <h3 className="text-base group-hover:text-ember transition-colors">
+        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+          <h3 className="min-w-0 text-base group-hover:text-ember transition-colors">
             {r.title}
           </h3>
           {r.level && <LevelBadge level={r.level} />}

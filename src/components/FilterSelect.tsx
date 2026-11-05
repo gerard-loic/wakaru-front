@@ -25,7 +25,7 @@ export default function FilterSelect({
   return (
     <label
       className={
-        "group relative flex items-center min-w-0 max-w-full bg-panel border transition-colors cursor-pointer focus-within:border-ember " +
+        "group relative flex items-center w-full sm:w-auto min-w-0 max-w-full bg-panel border transition-colors cursor-pointer focus-within:border-ember " +
         (active ? "border-ember/60" : "border-line hover:border-line-bright")
       }
     >
@@ -38,7 +38,7 @@ export default function FilterSelect({
           onChange(e.target.value === "" ? null : Number(e.target.value))
         }
         className={
-          "mono appearance-none min-w-0 max-w-52 truncate bg-transparent pl-2.5 pr-8 py-2 text-xs outline-none cursor-pointer [&>option]:bg-panel [&>option]:text-chalk " +
+          "mono appearance-none flex-1 sm:flex-none min-w-0 sm:max-w-52 truncate bg-transparent pl-2.5 pr-8 py-2 text-base md:text-xs outline-none cursor-pointer [&>option]:bg-panel [&>option]:text-chalk " +
           (active ? "text-ember" : "text-chalk")
         }
       >

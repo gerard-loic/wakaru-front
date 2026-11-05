@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, type ReactNode } from "react"
+import { createPortal } from "react-dom"
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
@@ -16,6 +17,9 @@ const MAX_WIDTH = {
  * Accessibilité : `role="dialog"` + `aria-modal`, fermeture par Échap ou clic
  * sur le fond, focus placé dans le panneau à l'ouverture, gardé à l'intérieur
  * (Tab / Maj+Tab) et rendu à l'élément d'origine à la fermeture.
+ *
+ * Rendue dans `body` : le tiroir de navigation (`translate`) servirait sinon de
+ * référence au `position: fixed` et enfermerait les popins qu'il ouvre.
  */
 export function Modal({
   title,
@@ -79,9 +83,9 @@ export function Modal({
     }
   }, [])
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 bg-ink/90 backdrop-blur-sm flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 bg-ink/90 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4"
       onMouseDown={(e) => {
         // Clic sur le fond uniquement (pas un glisser commencé dans le panneau).
         if (e.target === e.currentTarget) onClose()
@@ -94,11 +98,11 @@ export function Modal({
         aria-labelledby={titleId}
         tabIndex={-1}
         className={
-          "w-full bg-panel border border-line max-h-[90vh] overflow-y-auto outline-none " +
+          "w-full bg-panel border border-line max-h-full sm:max-h-[90dvh] overflow-y-auto outline-none " +
           MAX_WIDTH[size]
         }
       >
-        <div className="flex items-center justify-between gap-4 px-6 py-4 border-b border-line sticky top-0 bg-panel z-10">
+        <div className="flex items-center justify-between gap-3 sm:gap-4 px-4 sm:px-6 py-4 border-b border-line sticky [@media(max-height:30rem)]:static top-0 bg-panel z-10">
           <div className="min-w-0">
             <div id={titleId}>{title}</div>
             {subtitle && <div className="mt-1">{subtitle}</div>}
@@ -115,11 +119,12 @@ export function Modal({
             </button>
           </div>
         </div>
-        <div className="p-6">{children}</div>
+        <div className="p-4 sm:p-6">{children}</div>
         {footer && (
-          <div className="px-6 py-3 border-t border-line">{footer}</div>
+          <div className="px-4 sm:px-6 py-3 border-t border-line">{footer}</div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }

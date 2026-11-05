@@ -59,7 +59,7 @@ export default function WeeklyTheme({
           課
         </div>
       )}
-      <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/10 lg:bg-gradient-to-r" />
+      <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/10 xl:bg-gradient-to-r" />
       <div className="relative p-6 lg:p-8 h-full flex flex-col justify-end max-w-xl">
         <div className="mono text-[11px] uppercase tracking-[0.16em] text-ember mb-2">
           Thème de la semaine{theme.date && ` · ${formatDate(theme.date)}`}

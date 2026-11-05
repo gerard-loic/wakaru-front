@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { Outlet, useLocation, useNavigate, useSearchParams } from "react-router-dom"
 import { markTaskDone } from "@/lib/knowledge"
 import { TYPE_OPTS, type QType } from "@/lib/quiz"
@@ -28,6 +28,8 @@ import {
 } from "@/features/themes/themeProgram"
 import { WordModal } from "@/features/vocab/WordModal"
 import { useWord } from "@/features/vocab/useWord"
+import { IconMenu } from "@/components/icons"
+import { Logo } from "@/components/Logo"
 import { Sidebar, type NavKey } from "@/layout/Sidebar"
 import { useCurrentUser, type CurrentUser } from "@/layout/useCurrentUser"
 
@@ -42,6 +44,7 @@ const NAV_KEYS: NavKey[] = [
   "exercises",
   "sentences",
   "blackboard",
+  "feedback",
 ]
 
 function navKeyFromPath(pathname: string): NavKey {
@@ -105,6 +108,8 @@ function idFromParam(value: string | null): number | null {
  * depuis n'importe quelle page par un simple lien.
  */
 export function AppLayout() {
+  const [navOpen, setNavOpen] = useState(false)
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
   const navigate = useNavigate()
   const location = useLocation()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -188,21 +193,53 @@ export function AppLayout() {
   }
 
   return (
-    <div className="h-full flex bg-ink text-chalk">
+    <div className="h-dvh flex bg-ink text-chalk">
       <Sidebar
         active={navKeyFromPath(location.pathname)}
         user={user}
         knowledgeVersion={knowledgeVersion}
+        open={navOpen}
+        onClose={() => setNavOpen(false)}
+        returnFocusRef={menuButtonRef}
         onUserChange={reloadUser}
-        onNav={(k) => navigate(`/${k}`)}
+        onNav={(k) => {
+          setNavOpen(false)
+          navigate(`/${k}`)
+        }}
         onLogout={() => sylo.logout()}
-        onPractice={() => openPractice("any")}
+        onPractice={() => {
+          setNavOpen(false)
+          openPractice("any")
+        }}
       />
-      <main className="flex-1 overflow-y-auto">
-        <div className="max-w-6xl mx-auto px-8 py-8">
-          <Outlet context={context} />
-        </div>
-      </main>
+      {/* `inert` : le contenu derrière le tiroir ouvert ne reçoit plus le focus. */}
+      <div inert={navOpen} className="flex-1 min-w-0 flex flex-col">
+        <header className="lg:hidden shrink-0 h-14 px-2 flex items-center gap-1 bg-panel border-b border-line">
+          <button
+            ref={menuButtonRef}
+            type="button"
+            onClick={() => setNavOpen(true)}
+            aria-label="Ouvrir le menu"
+            aria-expanded={navOpen}
+            className="size-10 grid place-items-center text-fog hover:text-ember transition-colors"
+          >
+            <IconMenu />
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate("/dashboard")}
+            aria-label="Tableau de bord"
+            className="block transition-opacity hover:opacity-80"
+          >
+            <Logo size="sm" />
+          </button>
+        </header>
+        <main className="flex-1 min-h-0 overflow-y-auto">
+          <div className="max-w-6xl mx-auto px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+            <Outlet context={context} />
+          </div>
+        </main>
+      </div>
       {(practiceParam || trainingPreset) && (
         <Practice
           initialType={
@@ -254,7 +291,7 @@ export function AppLayout() {
       {taskError && (
         <div
           role="alert"
-          className="fixed bottom-4 right-4 z-60 max-w-sm border border-ember/40 bg-panel px-4 py-3 flex items-start gap-3"
+          className="fixed bottom-4 left-4 right-4 sm:left-auto z-60 sm:max-w-sm border border-ember/40 bg-panel px-4 py-3 flex items-start gap-3"
         >
           <p className="mono text-xs text-ember">
             Tâche non validée : {taskError}

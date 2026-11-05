@@ -45,7 +45,7 @@ export function StatCard({ s }: { s: StatPanel }) {
         )}
       </div>
 
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-2">
         {segs.map((seg) => (
           <div key={seg.k}>
             <div

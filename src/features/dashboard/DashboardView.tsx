@@ -34,7 +34,7 @@ export function DashboardView({
         <div className="flex items-end gap-4">
           <div>
             <div className="jp text-fog text-sm mb-1">ダッシュボード</div>
-            <h1 className="display text-4xl font-800 tracking-tight leading-none">
+            <h1 className="display text-3xl sm:text-4xl font-800 tracking-tight leading-none">
               {firstName ? `Bonjour, ${firstName}` : "Bonjour"}
             </h1>
           </div>
@@ -46,7 +46,7 @@ export function DashboardView({
 
       {/* Weekly theme banner */}
       <section className="border border-line overflow-hidden mb-8">
-        <div className="grid lg:grid-cols-[1.4fr_1fr]">
+        <div className="grid xl:grid-cols-[1.4fr_1fr]">
           <WeeklyTheme
             theme={weeklyTheme.data}
             loading={weeklyTheme.loading}

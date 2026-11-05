@@ -12,7 +12,11 @@ http://localhost:8443 ou autre
 
 # En production 
 git pull
-docker compose up -d --build
+make up
+
+Pour arrêter :
+
+make down
 
 Pour tester le build de l'image en local avant de pousser sur le serveur :
 

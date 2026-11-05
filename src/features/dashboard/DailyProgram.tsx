@@ -25,7 +25,7 @@ export default function DailyProgram({
   const weekday = WEEK_DAYS[(new Date().getDay() + 6) % 7] // lundi = 0
 
   return (
-    <div className="border-t lg:border-t-0 lg:border-l border-line p-6 bg-panel flex flex-col">
+    <div className="border-t xl:border-t-0 xl:border-l border-line p-4 sm:p-6 bg-panel flex flex-col">
       <div className="flex items-baseline justify-between mb-4">
         <div className="mono text-[11px] uppercase tracking-[0.14em] text-fog">
           Ton programme du jour
@@ -53,7 +53,7 @@ export default function DailyProgram({
             return (
               <div
                 key={i}
-                className="border border-line p-3 flex items-center gap-3 bg-ink/40"
+                className="border border-line p-3 flex flex-wrap items-center gap-3 bg-ink/40 [&>:last-child]:ml-auto"
               >
                 <span
                   className="jp text-lg w-9 h-9 shrink-0 grid place-items-center border border-line text-ember"
@@ -61,7 +61,7 @@ export default function DailyProgram({
                 >
                   {meta.glyph}
                 </span>
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-32">
                   <div className="text-sm leading-snug">{t.name}</div>
                   <div className="mono text-[10px] text-fog truncate">
                     {meta.label}

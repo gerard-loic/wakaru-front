@@ -170,7 +170,7 @@ function SegmentDetail({
   return (
     <li
       style={{ "--accent": kind.color } as CSSProperties}
-      className="grid grid-cols-[1.75rem_4.5rem_1fr] gap-3 items-start border border-line bg-ink/30 px-3 py-3"
+      className="grid grid-cols-[1.75rem_4.5rem_minmax(0,1fr)] gap-3 items-start border border-line bg-ink/30 px-3 py-3"
     >
       <span className="num text-[11px] text-fog pt-1">
         {String(index).padStart(2, "0")}

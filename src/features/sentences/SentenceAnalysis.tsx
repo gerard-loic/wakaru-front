@@ -102,7 +102,7 @@ function TokenDetail({
   return (
     <li
       style={{ "--accent": role.color } as CSSProperties}
-      className="grid grid-cols-[5.5rem_1fr] gap-4 items-start border border-line bg-ink/30 px-4 py-3"
+      className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-4 items-start border border-line bg-ink/30 px-4 py-3"
     >
       <div className="min-w-0">
         <div className="jp text-xl leading-tight break-words">{t.text}</div>

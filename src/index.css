@@ -39,6 +39,7 @@ body {
   color: var(--color-chalk);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
+  overflow-wrap: break-word;
 }
 
 /* Tailwind v4 remet le curseur par défaut sur les boutons : main partout. */

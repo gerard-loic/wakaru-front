@@ -16,6 +16,7 @@ import { AuthScreen } from "@/features/auth/AuthScreen"
 import { RegisterScreen } from "@/features/auth/RegisterScreen"
 import ForgotPasswordScreen from "@/features/auth/ForgotPasswordScreen"
 import ResetPasswordScreen from "@/features/auth/ResetPasswordScreen"
+import UnsubscribeScreen from "@/features/auth/UnsubscribeScreen"
 import { TermsScreen } from "@/features/legal/TermsScreen"
 import { DashboardView } from "@/features/dashboard/DashboardView"
 import { VocabView } from "@/features/vocab/VocabView"
@@ -37,6 +38,7 @@ import { useExercise } from "@/features/exercises/useExercise"
 import { SentencesView } from "@/features/sentences/SentencesView"
 import { useSentences } from "@/features/sentences/useSentences"
 import BlackboardView from "@/features/blackboard/BlackboardView"
+import FeedbackView from "@/features/feedback/FeedbackView"
 
 export default function App() {
   const [authed, setAuthed] = useState(() => sylo.isAuthenticated)
@@ -76,6 +78,7 @@ export default function App() {
         />
         {/* Accessible même connecté : le lien reçu par e-mail doit toujours aboutir. */}
         <Route path="/reset-password" element={<ResetPasswordScreen />} />
+        <Route path="/desabonnement" element={<UnsubscribeScreen />} />
         <Route path="/cgu" element={<TermsScreen />} />
         <Route
           element={authed ? <AppLayout /> : <Navigate to="/login" replace />}
@@ -95,6 +98,7 @@ export default function App() {
           <Route path="exercises/:id" element={<ExerciseDetailRoute />} />
           <Route path="sentences" element={<SentencesRoute />} />
           <Route path="blackboard" element={<BlackboardView />} />
+          <Route path="feedback" element={<FeedbackView />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Routes>

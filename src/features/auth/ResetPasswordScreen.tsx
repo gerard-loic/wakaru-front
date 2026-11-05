@@ -1,7 +1,8 @@
-import { useState, type ReactNode } from "react"
-import { Link, useSearchParams } from "react-router-dom"
+import { useState } from "react"
+import { useSearchParams } from "react-router-dom"
 import { useResetPassword } from "@/features/auth/useResetPassword"
 import {
+  ActionLink,
   AuthError,
   AuthLayout,
   Field,
@@ -86,17 +87,5 @@ export default function ResetPasswordScreen() {
         {pending ? "Enregistrement…" : "Enregistrer →"}
       </SubmitButton>
     </AuthLayout>
-  )
-}
-
-/** Lien présenté comme le bouton principal des écrans d'authentification. */
-function ActionLink({ to, children }: { to: string; children: ReactNode }) {
-  return (
-    <Link
-      to={to}
-      className="mono text-sm uppercase tracking-[0.1em] block text-center w-full mt-8 py-3.5 bg-ember text-ink font-600 transition-all hover:bg-ember-soft"
-    >
-      {children}
-    </Link>
   )
 }

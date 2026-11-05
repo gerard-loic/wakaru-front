@@ -27,6 +27,7 @@ export interface TurnstileRenderOptions {
   sitekey: string
   theme?: "light" | "dark" | "auto"
   language?: string
+  size?: "normal" | "compact"
   callback?: (token: string) => void
   "expired-callback"?: () => void
   "error-callback"?: () => void

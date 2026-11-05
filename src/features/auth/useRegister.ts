@@ -6,6 +6,7 @@ export interface RegisterValues {
   firstName: string
   lastName: string
   password: string
+  mailingAllowed: boolean
   captchaToken: string
 }
 
@@ -41,6 +42,7 @@ export function useRegister(): UseRegister {
         first_name: values.firstName.trim(),
         last_name: values.lastName.trim(),
         password: values.password,
+        is_mailing_allowed: values.mailingAllowed,
         captcha_token: values.captchaToken,
       })
     } catch (err) {

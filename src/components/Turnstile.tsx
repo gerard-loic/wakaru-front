@@ -46,6 +46,8 @@ export function Turnstile({
           sitekey: turnstileSiteKey,
           theme: "dark",
           language: "fr",
+          // Le widget standard fait 300 px : il déborderait sur petit écran.
+          size: containerRef.current.clientWidth < 300 ? "compact" : "normal",
           callback: (token) => {
             setError(null)
             onTokenRef.current(token)

@@ -265,6 +265,7 @@ export class SyloConnector {
     first_name: string
     last_name: string
     password: string
+    is_mailing_allowed: boolean
     captcha_token: string
   }): Promise<T> {
     const { data } = await this.request<T>(
@@ -299,6 +300,18 @@ export class SyloConnector {
     password: string
   }): Promise<void> {
     await this.request("POST", `${this.authPrefix}/reset-password`, {
+      body: payload,
+      auth: false,
+    })
+  }
+
+  /**
+   * `POST /users/unsubscribe` : coupe les e-mails d'information à partir du jeton
+   * du lien reçu par e-mail (400 `invalid_unsubscribe_token` s'il est invalide).
+   * Route publique : le jeton fait office d'authentification.
+   */
+  async unsubscribe(payload: { token: string }): Promise<void> {
+    await this.request("POST", `${this.authPrefix}/unsubscribe`, {
       body: payload,
       auth: false,
     })

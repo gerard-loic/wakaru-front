@@ -157,7 +157,7 @@ export default function BlackboardView() {
 
       <div
         ref={boardRef}
-        className="relative mx-auto aspect-square w-[min(100%,calc(100dvh-11rem))] border border-line-bright bg-panel"
+        className="relative mx-auto aspect-square w-[min(100%,max(20rem,calc(100dvh-14.5rem)))] lg:w-[min(100%,calc(100dvh-11rem))] border border-line-bright bg-panel"
       >
         <div className="absolute inset-y-0 left-1/2 border-l border-dashed border-line-bright" />
         <div className="absolute inset-x-0 top-1/2 border-t border-dashed border-line-bright" />

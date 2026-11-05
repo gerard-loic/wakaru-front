@@ -6,11 +6,12 @@ export function Logo({
   size = "md",
   className = "text-wakaru",
 }: {
-  size?: "md" | "lg" | "xl"
+  size?: "sm" | "md" | "lg" | "xl"
   /** Couleur du logo (classe `text-*`). */
   className?: string
 }) {
   const h = {
+    sm: "h-9",
     md: "h-12",
     lg: "h-18",
     xl: "h-[min(12rem,28vh)] max-w-full",

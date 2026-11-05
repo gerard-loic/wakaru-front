@@ -1,10 +1,15 @@
 import type { FormEvent } from "react"
 import { Modal } from "@/components/Modal"
-import { AuthError, Field, SubmitButton } from "@/features/auth/AuthLayout"
+import {
+  AuthError,
+  Field,
+  MailingConsent,
+  SubmitButton,
+} from "@/features/auth/AuthLayout"
 import { useUpdateAccount } from "@/features/account/useUpdateAccount"
 import type { CurrentUser } from "@/layout/useCurrentUser"
 
-/** Popin de modification des informations personnelles (prénom, nom, e-mail). */
+/** Popin de modification des informations personnelles (prénom, nom, e-mail, envoi d'e-mails). */
 export function ProfileModal({
   user,
   onSaved,
@@ -28,6 +33,7 @@ export function ProfileModal({
       first_name: field("first_name"),
       last_name: field("last_name"),
       email: field("email"),
+      is_mailing_allowed: data.get("is_mailing_allowed") === "on",
     })
     if (ok) {
       onSaved()
@@ -76,6 +82,7 @@ export function ProfileModal({
             defaultValue={user.email}
             required
           />
+          <MailingConsent defaultChecked={user.mailingAllowed} />
         </div>
 
         <AuthError message={error} />

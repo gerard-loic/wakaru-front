@@ -1,4 +1,4 @@
-import { useState, type FC } from "react"
+import { useEffect, useRef, useState, type FC, type RefObject } from "react"
 import { Logo } from "@/components/Logo"
 import {
   IconDash,
@@ -10,15 +10,17 @@ import {
   IconCheck,
   IconQuote,
   IconBoard,
+  IconFeedback,
   IconCoffee,
   IconInfo,
+  IconClose,
 } from "@/components/icons"
 import { AboutModal } from "@/layout/AboutModal"
 import { useItemStats, type ItemStats } from "@/layout/useItemStats"
 import { UserMenu } from "@/layout/UserMenu"
 import type { CurrentUser } from "@/layout/useCurrentUser"
 
-export type NavKey = "dashboard" | "vocab" | "hiragana" | "katakana" | "themes" | "kanji" | "grammar" | "exercises" | "sentences" | "blackboard"
+export type NavKey = "dashboard" | "vocab" | "hiragana" | "katakana" | "themes" | "kanji" | "grammar" | "exercises" | "sentences" | "blackboard" | "feedback"
 
 const NAV: { key: NavKey; label: string; jp: string; Icon: FC }[] = [
   {
@@ -36,6 +38,7 @@ const NAV: { key: NavKey; label: string; jp: string; Icon: FC }[] = [
   { key: "exercises", label: "Exercices", jp: "練習", Icon: IconCheck },
   { key: "sentences", label: "Phrases", jp: "例文", Icon: IconQuote },
   { key: "blackboard", label: "Tableau noir", jp: "黒板", Icon: IconBoard },
+  { key: "feedback", label: "Feedback", jp: "ご意見", Icon: IconFeedback },
 ]
 
 /** Famille d'items de `GET /stats/items` correspondant à chaque entrée du menu. */
@@ -54,6 +57,9 @@ export function Sidebar({
   active,
   user,
   knowledgeVersion,
+  open,
+  onClose,
+  returnFocusRef,
   onUserChange,
   onNav,
   onLogout,
@@ -63,6 +69,11 @@ export function Sidebar({
   user: CurrentUser | null
   /** Change quand la progression de l'utilisateur a été modifiée. */
   knowledgeVersion: number
+  /** Tiroir ouvert (sous `lg` ; au-delà, la sidebar est toujours affichée). */
+  open: boolean
+  onClose: () => void
+  /** Élément qui reprend le focus à la fermeture du tiroir. */
+  returnFocusRef: RefObject<HTMLElement | null>
   /** Appelé après une modification du profil. */
   onUserChange: () => void
   onNav: (k: NavKey) => void
@@ -72,14 +83,66 @@ export function Sidebar({
   // Rechargé à chaque changement de section : consulter des items peut les marquer comme vus.
   const itemStats = useItemStats([active, knowledgeVersion])
   const [aboutOpen, setAboutOpen] = useState(false)
+  const closeRef = useRef<HTMLButtonElement>(null)
+
+  // `onClose` change à chaque rendu : on garde la dernière version sans
+  // réabonner les écouteurs.
+  const onCloseRef = useRef(onClose)
+  onCloseRef.current = onClose
+
+  useEffect(() => {
+    if (!open) return
+    closeRef.current?.focus()
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      // Échap ferme d'abord la popin ouverte par-dessus le tiroir.
+      if (e.key !== "Escape" || document.querySelector('[aria-modal="true"]')) return
+      onCloseRef.current()
+    }
+    // Passage en mise en page bureau (rotation, redimensionnement) : le tiroir
+    // n'a plus lieu d'être et laisserait le contenu inerte.
+    const desktop = window.matchMedia("(min-width: 64rem)")
+    const onDesktop = () => {
+      if (desktop.matches) onCloseRef.current()
+    }
+
+    document.addEventListener("keydown", onKeyDown)
+    desktop.addEventListener("change", onDesktop)
+    return () => {
+      document.removeEventListener("keydown", onKeyDown)
+      desktop.removeEventListener("change", onDesktop)
+      returnFocusRef.current?.focus()
+    }
+  }, [open, returnFocusRef])
+
   return (
-    <aside className="w-64 shrink-0 bg-panel border-r border-line flex flex-col h-full">
-      <div className="px-[22px] py-4 border-b border-line flex items-center justify-between gap-3">
+    <>
+    {open && (
+      <div
+        aria-hidden="true"
+        onClick={onClose}
+        className="lg:hidden fixed inset-0 z-40 bg-ink/70 backdrop-blur-sm"
+      />
+    )}
+    <aside
+      aria-label="Navigation principale"
+      className={
+        "fixed inset-y-0 left-0 z-40 w-72 max-w-[85vw] duration-200 " +
+        "lg:static lg:z-auto lg:w-64 lg:max-w-none lg:shrink-0 lg:translate-x-0 lg:visible lg:transition-none " +
+        "bg-panel border-r border-line flex flex-col h-full [@media(max-height:30rem)]:overflow-y-auto " +
+        // `visibility` n'est animée qu'à la fermeture : à l'ouverture, le bouton
+        // de fermeture doit pouvoir recevoir le focus immédiatement.
+        (open
+          ? "translate-x-0 visible transition-[translate]"
+          : "-translate-x-full invisible transition-[translate,visibility]")
+      }
+    >
+      <div className="px-[22px] py-4 border-b border-line flex items-center gap-1">
         <button
           type="button"
           onClick={() => onNav("dashboard")}
           aria-label="Tableau de bord"
-          className="block transition-opacity hover:opacity-80"
+          className="block mr-auto transition-opacity hover:opacity-80"
         >
           <Logo size="lg" />
         </button>
@@ -92,10 +155,19 @@ export function Sidebar({
         >
           <IconInfo />
         </button>
+        <button
+          ref={closeRef}
+          type="button"
+          onClick={onClose}
+          aria-label="Fermer le menu"
+          className="lg:hidden size-8 shrink-0 grid place-items-center translate-y-1 text-fog hover:text-ember transition-colors"
+        >
+          <IconClose />
+        </button>
       </div>
       {aboutOpen && <AboutModal onClose={() => setAboutOpen(false)} />}
 
-      <nav className="flex-1 py-4 overflow-y-auto">
+      <nav className="flex-1 py-4 overflow-y-auto [@media(max-height:30rem)]:flex-none [@media(max-height:30rem)]:overflow-visible">
         <div className="px-3 mb-4">
           <button
             onClick={onPractice}
@@ -196,5 +268,6 @@ export function Sidebar({
         </a>
       </div>
     </aside>
+    </>
   )
 }

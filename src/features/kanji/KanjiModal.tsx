@@ -113,7 +113,7 @@ export function KanjiModal({
         </div>
 
         <div className="space-y-6 min-w-0">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid sm:grid-cols-2 gap-3">
             <ReadingBlock label="Lecture ON (音読み)" values={k.on} />
             <ReadingBlock label="Lecture KUN (訓読み)" values={k.kun} />
           </div>
@@ -177,7 +177,7 @@ function ReadingBlock({ label, values }: { label: string; values: string[] }) {
       <div className="mono text-[10px] uppercase tracking-[0.12em] text-fog mb-2">
         {label}
       </div>
-      <div className="jp text-2xl">{values.length ? values.join("　") : "—"}</div>
+      <div className="jp text-2xl break-keep wrap-anywhere">{values.length ? values.join("　") : "—"}</div>
     </div>
   )
 }

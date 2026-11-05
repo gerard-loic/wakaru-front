@@ -33,8 +33,8 @@ export function ExerciseRunner({
   onClose: () => void
 }) {
   return (
-    <div className="fixed inset-0 z-50 bg-ink/90 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl bg-panel border border-line max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-ink/90 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4">
+      <div className="w-full max-w-2xl bg-panel border border-line max-h-full sm:max-h-[90dvh] overflow-y-auto">
         {detail ? (
           // `key` : repart de zéro si l'on passe d'un exercice à l'autre.
           <Run
@@ -47,7 +47,7 @@ export function ExerciseRunner({
         ) : (
           <>
             <Header title="Exercice" subtitle={loading ? "Chargement…" : ""} onClose={onClose} />
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
               {error ? (
                 <div role="alert" className="flex flex-col items-center gap-3 text-center py-6">
                   <p className="mono text-xs text-ember">{error}</p>
@@ -81,9 +81,9 @@ function Header({
   onClose: () => void
 }) {
   return (
-    <div className="flex items-center justify-between px-6 py-4 border-b border-line sticky top-0 bg-panel z-10">
+    <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-line sticky top-0 bg-panel z-10">
       <div className="flex items-center gap-3">
-        <span className="jp text-ember text-xl">練習</span>
+        <span className="jp text-ember text-xl shrink-0">練習</span>
         <div>
           <div className="display font-800 text-lg leading-none">{title}</div>
           <div className="mono text-[10px] text-fog uppercase tracking-[0.12em] mt-1">
@@ -171,7 +171,7 @@ function Run({
   return (
     <>
       <Header title={e.title} subtitle={total ? subtitle : ""} onClose={onClose} />
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         {total === 0 ? (
           <p className="mono text-xs text-fog text-center py-10">
             Cet exercice ne contient encore aucune question.
@@ -323,7 +323,7 @@ function Question({
           {String(number).padStart(2, "0")}
         </span>
         <PromptText
-          className="text-3xl px-10"
+          className="text-2xl sm:text-3xl px-2 sm:px-10"
           parts={item.parts}
           renderBlank={(b) =>
             choices.length > 0 ? (
@@ -352,7 +352,7 @@ function Question({
                 aria-label={`Trou ${b.key}`}
                 size={Math.max(3, (given[b.key] ?? "").length + 1, ...b.answers.map((a) => a.length + 1))}
                 className={
-                  "jp mx-1 px-1 bg-transparent border-b-2 text-center outline-none focus:border-ember align-baseline " +
+                  "jp max-w-full mx-1 px-1 bg-transparent border-b-2 text-center outline-none focus:border-ember align-baseline " +
                   blankState(b.key)
                 }
               />
@@ -360,7 +360,7 @@ function Question({
           }
         />
         {item.translation && (
-          <p className="text-sm text-fog mt-3 px-6">{item.translation}</p>
+          <p className="text-sm text-fog mt-3 px-2 sm:px-6">{item.translation}</p>
         )}
       </div>
 
