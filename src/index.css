@@ -41,6 +41,14 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Tailwind v4 remet le curseur par défaut sur les boutons : main partout. */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+}
+
 ::selection {
   background: var(--color-ember);
   color: var(--color-ink);
@@ -71,6 +79,10 @@ body {
 }
 .mono {
   font-family: var(--font-mono);
+}
+.num {
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
 }
 .display {
   font-family: var(--font-display);

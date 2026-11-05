@@ -1,0 +1,39 @@
+- [x] Dynamiser les informations personnelles en bas
+- [x] Changer la police des puces
+- [x] Supprimer les numéros des parties
+- [x] Page de création de compte
+- [x] Page de création de mot de passe
+- [x] Page de cloture de compte
+- [x] CGU
+- [x] Page de modification de mot de passe
+- [x] Mot de passe oublié
+- [x] Tableau de bord
+- [x] Exercice
+- [x] Lien sur les boutons s'exercer
+- [x] Tableau de conjugaison
+- [x] Formattage des mails
+- [x] Mail alerte quand nouvelle lesson
+- [x] Revoir l'affichage du logo
+- [x] Revoir les textes affichés
+- [x] Lien donation
+- [x] Revoir les curseurs main
+- [x] Info dans la page du thème
+- [x] Dans les exercices ne pas retourner les types d'exercices quand il n'y a pas assez de matière
+- [x] Dans les mots ne pas afficher nouveau pour les éléments qui ne sont pas dans des exercices
+- [x] Exercices : cas des kanjis et de l'aléatoire
+- [x] Revoir le fonctionnement du new dans la grammaire
+- [ ] Responsive
+- [ ] Aide Romanji
+- [ ] Aide kanji
+- [ ] Recherche plus efficace
+- [x] Dans les exercices les titres au dessus
+- [x] Revoir les filtres pour les mots (liste)
+- [x] Modification mot de passe
+- [x] Modification infos personnelles
+- [ ] Lien désinscription email
+- [x] Assignation à la créa d'un nouveau thème et souci ?
+- [x] Dans les règles de grammaire ajouter la catégorie
+- [x] Problème de l'image du thème trop étroite
+- [x] ne pas faire d'exercice quand c'est pas le bon jour
+- [x] Filtre de thème
+

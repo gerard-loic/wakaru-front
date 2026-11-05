@@ -1,0 +1,153 @@
+import { useState, type FormEvent, type ReactNode } from "react"
+import { Logo } from "@/components/Logo"
+import { AboutModal } from "@/layout/AboutModal"
+
+/**
+ * Coquille commune aux écrans d'authentification (connexion, inscription) :
+ * panneau de marque à gauche, formulaire à droite.
+ */
+export function AuthLayout({
+  kicker,
+  title,
+  onSubmit,
+  children,
+}: {
+  kicker: string
+  title: string
+  onSubmit: (data: FormData) => void
+  children: ReactNode
+}) {
+  const [aboutOpen, setAboutOpen] = useState(false)
+  const openAbout = () => setAboutOpen(true)
+
+  return (
+    <div className="h-full grid lg:grid-cols-[1.1fr_1fr]">
+      {/* Brand panel */}
+      <div className="relative hidden lg:flex flex-col justify-between p-12 bg-wakaru overflow-hidden">
+        <div
+          className="absolute -right-10 bottom-[-4rem] jp text-ink/10 leading-none select-none pointer-events-none"
+          style={{ fontSize: "26rem" }}
+        >
+          分
+        </div>
+        <div className="relative jp text-ink/70 text-sm tracking-[0.28em] uppercase">
+          分かる・日本語
+        </div>
+
+        <div className="relative flex flex-col items-center text-center my-auto">
+          <Logo size="xl" className="text-ink" />
+          <div className="jp text-ink text-2xl mt-6 mb-3">
+            言葉は世界への扉。
+          </div>
+          <h2 className="display text-ink text-4xl font-900 leading-[0.95] tracking-tight max-w-md text-balance">
+            Apprendre le japonais au fil des saisons
+          </h2>
+          <button
+            type="button"
+            onClick={openAbout}
+            className="mt-8 px-5 py-2.5 border-2 border-ink text-sm font-600 text-ink hover:bg-ink hover:text-wakaru transition-colors"
+          >
+            En savoir plus sur Wakaru →
+          </button>
+        </div>
+      </div>
+
+      {/* Form panel */}
+      <div className="flex items-center justify-center p-8 overflow-y-auto">
+        <form
+          onSubmit={(e: FormEvent<HTMLFormElement>) => {
+            e.preventDefault()
+            onSubmit(new FormData(e.currentTarget))
+          }}
+          className="w-full max-w-sm"
+        >
+          <div className="lg:hidden mb-8">
+            <Logo size="lg" />
+            <button
+              type="button"
+              onClick={openAbout}
+              className="block mt-3 text-sm text-ember hover:text-ember-soft underline underline-offset-4"
+            >
+              En savoir plus sur Wakaru
+            </button>
+          </div>
+          <div className="mono text-[11px] uppercase tracking-[0.2em] text-ember mb-2">
+            {kicker}
+          </div>
+          <h1 className="display text-3xl font-800 mb-8">{title}</h1>
+          {children}
+        </form>
+      </div>
+
+      {aboutOpen && <AboutModal onClose={() => setAboutOpen(false)} />}
+    </div>
+  )
+}
+
+export function Field({
+  name,
+  label,
+  placeholder,
+  type = "text",
+  required = false,
+  autoComplete,
+  minLength,
+  defaultValue,
+}: {
+  name: string
+  label: string
+  placeholder: string
+  type?: string
+  required?: boolean
+  autoComplete?: string
+  minLength?: number
+  defaultValue?: string
+}) {
+  return (
+    <label className="block">
+      <span className="mono text-[10px] uppercase tracking-[0.12em] text-fog">
+        {label}
+      </span>
+      <input
+        name={name}
+        type={type}
+        placeholder={placeholder}
+        required={required}
+        autoComplete={autoComplete}
+        minLength={minLength}
+        defaultValue={defaultValue}
+        className="mt-1.5 w-full bg-panel border border-line px-3.5 py-3 text-chalk placeholder:text-fog/50 outline-none focus:border-ember transition-colors"
+      />
+    </label>
+  )
+}
+
+export function AuthError({ message }: { message: string | null }) {
+  if (!message) return null
+  return (
+    <p
+      role="alert"
+      className="mono text-xs text-ember mt-4 border border-ember/40 bg-ember/5 px-3 py-2"
+    >
+      {message}
+    </p>
+  )
+}
+
+export function SubmitButton({
+  pending,
+  children,
+}: {
+  pending: boolean
+  children: ReactNode
+}) {
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="mono text-sm uppercase tracking-[0.1em] w-full mt-8 py-3.5 bg-ember text-ink font-600 transition-all hover:bg-ember-soft active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
+    >
+      {children}
+    </button>
+  )
+}

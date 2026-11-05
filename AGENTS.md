@@ -1,13 +1,25 @@
-# figma-make-app
+# wakaru-front
 
-React + Vite + Tailwind CSS project running inside Figma Make.
+React + Vite + Tailwind CSS project.
 
 ## Development Server
 
-A Vite development server is **already running** on `$PORT` (default 8443). You don't need to start it manually.
+No dev server runs by default — start one yourself. `PORT` defaults to 8443.
 
-- Preview URL: The user can access the running app through the preview panel
-- Hot reload: Changes to source files are reflected immediately
+```
+# stop an existing instance if needed
+pkill -f 'vite'
+
+# start (bypasses the pnpm script layer, see .mise.toml note below)
+node_modules/.bin/vite --host 0.0.0.0
+```
+
+- Hot reload: changes to source files are reflected immediately.
+- Changes to `.env` are **not** hot-reloaded — Vite injects `import.meta.env.VITE_*` at server start, so restart the dev server (same command above) after editing `.env`.
+
+## Production
+
+Built and served via Docker (`Dockerfile`, `nginx.conf`) — see `README.md`.
 
 ## Project Structure
 
@@ -18,7 +30,7 @@ This is the canonical project structure. Start with task-relevant files below. O
 - `src/index.css` - Global CSS entrypoint and Tailwind CSS v4 import
 - `index.html` - Vite HTML shell containing the `#root` element and loading `src/main.tsx`
 - `package.json` - Project dependencies and the Vite build, development, preview, and formatting scripts
-- `vite.config.ts` - Vite configuration with React, Tailwind CSS v4, and Figma Make plugins plus the `@` alias for `src`
+- `vite.config.ts` - Vite configuration with React, Tailwind CSS v4, and the `@` alias for `src`
 - `.mise.toml` - Toolchain versions for Node.js and pnpm
 
 ## Dependencies
