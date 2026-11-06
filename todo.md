@@ -22,7 +22,7 @@
 - [x] Dans les mots ne pas afficher nouveau pour les éléments qui ne sont pas dans des exercices
 - [x] Exercices : cas des kanjis et de l'aléatoire
 - [x] Revoir le fonctionnement du new dans la grammaire
-- [ ] Responsive
+- [x] Responsive
 - [ ] Aide Romanji
 - [ ] Aide kanji
 - [ ] Recherche plus efficace
