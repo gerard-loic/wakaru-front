@@ -14,7 +14,7 @@ const TEST_SITE_KEY = "1x00000000000000000000AA"
  * défaut, la clé de test en dev. En prod, `.env*` n'entre pas dans l'image
  * Docker (voir `.dockerignore`) : renseigner la vraie clé ici.
  */
-const PROD_SITE_KEY = ""
+const PROD_SITE_KEY = "0x4AAAAAAF2QpYw1DE42eJgE"
 
 export const turnstileSiteKey: string =
   import.meta.env.VITE_TURNSTILE_SITE_KEY ??
