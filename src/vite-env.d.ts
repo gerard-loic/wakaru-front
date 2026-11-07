@@ -21,7 +21,7 @@ interface ImportMetaEnv {
   readonly VITE_TURNSTILE_SITE_KEY?: string
   /**
    * Jour de la semaine correspondant au jour 1 du programme d'un thème :
-   * `1` (lundi, défaut) à `7` (dimanche).
+   * `1` (lundi) à `7` (dimanche), `2` (mardi) par défaut.
    */
   readonly VITE_PROGRAM_FIRST_DAY?: string
 }

@@ -30,12 +30,17 @@ export type WeekProgram = ProgramTask[][]
 
 const DAYS_PER_WEEK = 7
 
+/** Mardi : valeur en prod, où le build de l'image ne voit aucun `.env`. */
+const DEFAULT_FIRST_DAY = 2
+
 /** Jour de la semaine du `day1` : 1 (lundi) à 7 (dimanche). */
 const FIRST_DAY = parseFirstDay(import.meta.env.VITE_PROGRAM_FIRST_DAY)
 
 function parseFirstDay(value: string | undefined): number {
   const day = Number(value)
-  return Number.isInteger(day) && day >= 1 && day <= DAYS_PER_WEEK ? day : 1
+  return Number.isInteger(day) && day >= 1 && day <= DAYS_PER_WEEK
+    ? day
+    : DEFAULT_FIRST_DAY
 }
 
 /** Index dans `WeekProgram` du jour `date`. */
