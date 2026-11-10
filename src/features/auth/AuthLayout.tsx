@@ -2,6 +2,8 @@ import { useState, type FormEvent, type ReactNode } from "react"
 import { Link } from "react-router-dom"
 import { Logo } from "@/components/Logo"
 import { AboutModal } from "@/layout/AboutModal"
+import { ChangelogModal } from "@/layout/ChangelogModal"
+import { CURRENT_RELEASE } from "@/lib/changelog"
 
 /**
  * Coquille commune aux écrans d'authentification (connexion, inscription) :
@@ -20,6 +22,8 @@ export function AuthLayout({
 }) {
   const [aboutOpen, setAboutOpen] = useState(false)
   const openAbout = () => setAboutOpen(true)
+  const [changelogOpen, setChangelogOpen] = useState(false)
+  const openChangelog = () => setChangelogOpen(true)
 
   return (
     <div className="min-h-dvh grid lg:grid-cols-[1.1fr_1fr]">
@@ -51,6 +55,17 @@ export function AuthLayout({
             En savoir plus sur Wakaru →
           </button>
         </div>
+
+        <div className="relative mono text-[11px] text-ink/70 tracking-[0.1em]">
+          v{CURRENT_RELEASE.version} ·{" "}
+          <button
+            type="button"
+            onClick={openChangelog}
+            className="underline underline-offset-4 hover:text-ink"
+          >
+            Quoi de neuf ?
+          </button>
+        </div>
       </div>
 
       {/* Form panel */}
@@ -71,6 +86,16 @@ export function AuthLayout({
             >
               En savoir plus sur Wakaru
             </button>
+            <div className="mt-1 mono text-[11px] text-fog">
+              v{CURRENT_RELEASE.version} ·{" "}
+              <button
+                type="button"
+                onClick={openChangelog}
+                className="underline underline-offset-4 hover:text-chalk"
+              >
+                Quoi de neuf ?
+              </button>
+            </div>
           </div>
           <div className="mono text-[11px] uppercase tracking-[0.2em] text-ember mb-2">
             {kicker}
@@ -81,6 +106,9 @@ export function AuthLayout({
       </div>
 
       {aboutOpen && <AboutModal onClose={() => setAboutOpen(false)} />}
+      {changelogOpen && (
+        <ChangelogModal onClose={() => setChangelogOpen(false)} />
+      )}
     </div>
   )
 }
