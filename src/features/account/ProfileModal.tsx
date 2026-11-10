@@ -4,12 +4,13 @@ import {
   AuthError,
   Field,
   MailingConsent,
+  VacationMode,
   SubmitButton,
 } from "@/features/auth/AuthLayout"
 import { useUpdateAccount } from "@/features/account/useUpdateAccount"
 import type { CurrentUser } from "@/layout/useCurrentUser"
 
-/** Popin de modification des informations personnelles (prénom, nom, e-mail, envoi d'e-mails). */
+/** Popin de modification des informations personnelles (prénom, nom, e-mail, envoi d'e-mails, mode vacances). */
 export function ProfileModal({
   user,
   onSaved,
@@ -34,6 +35,7 @@ export function ProfileModal({
       last_name: field("last_name"),
       email: field("email"),
       is_mailing_allowed: data.get("is_mailing_allowed") === "on",
+      is_onvacation: data.get("is_onvacation") === "on",
     })
     if (ok) {
       onSaved()
@@ -83,6 +85,7 @@ export function ProfileModal({
             required
           />
           <MailingConsent defaultChecked={user.mailingAllowed} />
+          <VacationMode defaultChecked={user.onVacation} />
         </div>
 
         <AuthError message={error} />

@@ -3,7 +3,7 @@ import RunTaskButton from "@/components/RunTaskButton"
 import { StatusPill } from "@/components/StatusPill"
 import type { TrainingRequest } from "@/features/practice/training"
 import {
-  programDayIndex,
+  programDayIndexSince,
   programWeekdayIndex,
   type ProgramTaskRef,
   type WeekProgram,
@@ -12,11 +12,14 @@ import {
 /** Onglet « Programme » d'un thème : les tâches de chaque jour de la semaine. */
 export function WeekPlan({
   program,
+  createdAt,
   isWeekly,
   onExercise,
   onTraining,
 }: {
   program: WeekProgram
+  /** Date de création du thème (ISO) : début de la semaine du programme. */
+  createdAt: string | null
   /** Thème de la semaine ? `null` tant que ce n'est pas connu. */
   isWeekly: boolean | null
   onExercise: (id: number, task: ProgramTaskRef) => void
@@ -24,7 +27,8 @@ export function WeekPlan({
 }) {
   const all = program.flat()
   const done = all.filter((t) => t.done).length
-  const todayIdx = programDayIndex()
+  // Hors de 0..6 une fois la semaine écoulée (tout est passé) ou pas commencée.
+  const todayIdx = programDayIndexSince(createdAt)
 
   if (all.length === 0) {
     return (

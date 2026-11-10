@@ -7,6 +7,7 @@ interface UserRecord {
   first_name: string
   last_name: string
   is_mailing_allowed?: boolean | null
+  is_onvacation?: boolean | null
   level?: { uid: string; name: string } | null
 }
 
@@ -23,6 +24,8 @@ export interface CurrentUser {
   level: string | null
   /** Accepte de recevoir des e-mails (`is_mailing_allowed`). */
   mailingAllowed: boolean
+  /** Mode vacances (`is_onvacation`) : les nouveaux thèmes ne sont pas attribués. */
+  onVacation: boolean
 }
 
 /**
@@ -60,5 +63,6 @@ function toCurrentUser(r: UserRecord): CurrentUser {
     email: r.email,
     level: r.level?.name ?? null,
     mailingAllowed: r.is_mailing_allowed === true,
+    onVacation: r.is_onvacation === true,
   }
 }

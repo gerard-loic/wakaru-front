@@ -1,9 +1,6 @@
 import { sylo } from "@/lib/sylo"
 import type { TrainingElement } from "@/features/practice/useTrainingConfiguration"
 
-/** Nombre de questions demandées à `POST /training`. */
-export const TRAINING_LENGTH = 20
-
 /** Texte affiché, avec sa lecture (kana) quand il contient des kanjis. */
 export interface TrainingText {
   text: string
@@ -69,7 +66,7 @@ export async function fetchTraining(
   const { data } = await sylo.call<{ items: TrainingItem[] }>(
     "POST",
     "/training",
-    { body: { ...request, number: TRAINING_LENGTH } },
+    { body: request },
   )
   return data?.items ?? []
 }

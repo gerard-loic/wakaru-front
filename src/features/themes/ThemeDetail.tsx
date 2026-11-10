@@ -162,6 +162,7 @@ export function ThemeDetail({
       {tab === "plan" && (
         <WeekPlan
           program={theme.program}
+          createdAt={theme.date}
           isWeekly={isWeekly}
           onExercise={onRunExercise}
           onTraining={onRunTraining}

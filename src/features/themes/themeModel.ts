@@ -15,7 +15,7 @@ export interface ThemeRecord {
   image_licence: string | null
   created_at: string | null
   /** Présent avec `with_knowledge` : progression de l'utilisateur connecté. */
-  user_knowledge?: { id: number; details: unknown } | null
+  user_knowledge?: { id: number; details: unknown; is_new?: boolean } | null
 }
 
 /** Thème prêt à afficher. */
@@ -30,6 +30,8 @@ export interface ThemeEntry {
   date: string | null
   /** Programme de la semaine, vide sans `with_knowledge`. */
   program: WeekProgram
+  /** Pas encore consulté par l'utilisateur connecté (`user_knowledge.is_new`). */
+  isNew: boolean
 }
 
 export function toTheme(r: ThemeRecord): ThemeEntry {
@@ -45,5 +47,6 @@ export function toTheme(r: ThemeRecord): ThemeEntry {
     imageCredit: credit || null,
     date: r.created_at,
     program: parseProgram(r.user_knowledge),
+    isNew: r.user_knowledge?.is_new ?? false,
   }
 }

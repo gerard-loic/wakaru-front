@@ -3,7 +3,6 @@ import { SectionHead } from "@/components/SectionHead"
 import { Empty } from "@/components/Empty"
 import { NewTag } from "@/components/NewTag"
 import type { ThemeEntry } from "@/features/themes/themeModel"
-import { themes as mockThemes } from "@/data"
 import { ExoProgress } from "./ExoProgress"
 
 export function ThemesView({
@@ -64,9 +63,6 @@ export function ThemesView({
                 </div>
               ))
             : themes.map((t) => {
-                // TEMPORAIRE : « Nouveau » n'est pas fourni par l'API, on
-                // affiche la valeur d'un thème fictif.
-                const mock = mockThemes[t.id % mockThemes.length]
                 return (
                 <button
                   key={t.id}
@@ -86,7 +82,7 @@ export function ThemesView({
                       </div>
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/20 to-transparent" />
-                    {mock.isNew && <NewTag className="absolute top-3 right-3" />}
+                    {t.isNew && <NewTag className="absolute top-3 right-3" />}
                     {t.imageCredit && (
                       <span className="absolute bottom-2 right-2 max-w-[90%] truncate mono text-[9px] text-fog/80">
                         © {t.imageCredit}

@@ -62,6 +62,8 @@ function practiceTypeFromParam(value: string | null): QType | "any" | null {
 export interface AppLayoutContext {
   /** Utilisateur connecté, `null` tant qu'il n'est pas chargé. */
   user: CurrentUser | null
+  /** Recharge l'utilisateur connecté (après une modification du compte). */
+  reloadUser: () => void
   /**
    * Lance un exercice (`?run=<id>`) dans un overlay. `task` : tâche du
    * programme à marquer comme faite à la fin.
@@ -181,6 +183,7 @@ export function AppLayout() {
 
   const context: AppLayoutContext = {
     user,
+    reloadUser,
     runExercise,
     runTraining,
     knowledgeVersion,

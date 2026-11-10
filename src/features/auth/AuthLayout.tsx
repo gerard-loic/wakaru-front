@@ -190,3 +190,28 @@ export function MailingConsent({
     </label>
   )
 }
+
+/**
+ * Mode vacances (`is_onvacation`), à lire dans le formulaire avec
+ * `data.get("is_onvacation") === "on"`.
+ */
+export function VacationMode({
+  defaultChecked = false,
+}: {
+  defaultChecked?: boolean
+}) {
+  return (
+    <label className="flex items-start gap-3 text-sm text-fog cursor-pointer">
+      <input
+        name="is_onvacation"
+        type="checkbox"
+        defaultChecked={defaultChecked}
+        className="mt-0.5 size-4 shrink-0 accent-ember cursor-pointer"
+      />
+      <span>
+        Mode vacances (vous ne recevrez plus les nouveaux contenus et thèmes
+        ajoutés)
+      </span>
+    </label>
+  )
+}

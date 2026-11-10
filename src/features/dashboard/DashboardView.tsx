@@ -3,7 +3,7 @@ import type { Remote } from "@/lib/useRemote"
 import type { TrainingRequest } from "@/features/practice/training"
 import type { ThemeEntry } from "@/features/themes/themeModel"
 import {
-  programDayIndex,
+  programDayIndexSince,
   type ProgramTaskRef,
 } from "@/features/themes/themeProgram"
 import type { ItemStats } from "@/layout/useItemStats"
@@ -11,9 +11,13 @@ import DailyProgram from "./DailyProgram"
 import WeeklyTheme from "./WeeklyTheme"
 import { STATUS } from "./status"
 import StatPanels from "./StatPanels"
+import PauseSuggestion from "./PauseSuggestion"
+import VacationBanner from "./VacationBanner"
 
 export function DashboardView({
   firstName,
+  onVacation,
+  onVacationChange,
   weeklyTheme,
   itemStats,
   onOpenTheme,
@@ -22,6 +26,13 @@ export function DashboardView({
 }: {
   /** Prénom de l'utilisateur connecté, absent tant qu'il n'est pas chargé. */
   firstName?: string
+  /**
+   * Mode vacances : bandeau pour repasser en actif si `true`, proposition de
+   * pause en bas de page si `false`. `null` tant que l'utilisateur n'est pas chargé.
+   */
+  onVacation: boolean | null
+  /** Appelé une fois le mode vacances activé ou désactivé depuis le tableau de bord. */
+  onVacationChange: () => void
   weeklyTheme: Remote<ThemeEntry | null>
   itemStats: Remote<ItemStats>
   onOpenTheme: (id: number) => void
@@ -56,7 +67,7 @@ export function DashboardView({
           />
 
           <DailyProgram
-            tasks={weeklyTheme.data?.program[programDayIndex()] ?? null}
+            tasks={weeklyTheme.data?.program[programDayIndexSince(weeklyTheme.data.date)] ?? null}
             loading={weeklyTheme.loading}
             error={weeklyTheme.error != null}
             onExercise={onExercise}
@@ -64,6 +75,8 @@ export function DashboardView({
           />
         </div>
       </section>
+
+      {onVacation === true && <VacationBanner onResumed={onVacationChange} />}
 
       {/* General statistics */}
       <section>
@@ -96,6 +109,8 @@ export function DashboardView({
           onRetry={itemStats.reload}
         />
       </section>
+
+      {onVacation === false && <PauseSuggestion onPaused={onVacationChange} />}
     </div>
   )
 }

@@ -49,6 +49,35 @@ export function programDayIndex(date = new Date(), firstDay = FIRST_DAY): number
   return (weekday - firstDay + DAYS_PER_WEEK) % DAYS_PER_WEEK
 }
 
+const MS_PER_DAY = 24 * 60 * 60 * 1000
+
+/**
+ * Index dans `WeekProgram` du jour `date`, pour un programme démarré la
+ * semaine de `createdAt` : son `day1` est le premier jour de programme
+ * (`FIRST_DAY`) tombant ce jour-là ou avant. Contrairement à
+ * `programDayIndex`, le résultat n'est pas borné : négatif avant le début,
+ * 7 ou plus une fois la semaine écoulée. Sans date de création, retombe sur
+ * la semaine courante.
+ */
+export function programDayIndexSince(
+  createdAt: string | null,
+  date = new Date(),
+  firstDay = FIRST_DAY,
+): number {
+  const created = createdAt ? new Date(createdAt) : null
+  if (!created || Number.isNaN(created.getTime())) {
+    return programDayIndex(date, firstDay)
+  }
+  const start = startOfDay(created)
+  start.setDate(start.getDate() - programDayIndex(created, firstDay))
+  // Arrondi : absorbe les changements d'heure (journées de 23 h ou 25 h).
+  return Math.round((startOfDay(date).getTime() - start.getTime()) / MS_PER_DAY)
+}
+
+function startOfDay(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate())
+}
+
 /** Jour de la semaine (lundi = 0) d'un index de `WeekProgram`. */
 export function programWeekdayIndex(index: number, firstDay = FIRST_DAY): number {
   return (firstDay - 1 + index) % DAYS_PER_WEEK

@@ -1,3 +1,4 @@
+import { markRead } from "@/lib/knowledge"
 import { sf, sylo } from "@/lib/sylo"
 import { useRemote, type Remote } from "@/lib/useRemote"
 import {
@@ -61,6 +62,9 @@ type ThemeWithKanjis = ThemeRecord & ThemeKanjiLinks
  * Détail d'un thème : le thème puis, en parallèle, ses mots (via
  * `theme_words`), kanji, règles, phrases et exercices. `data` vaut `null` tant que rien
  * n'est chargé.
+ *
+ * Consulter la page du thème vaut lecture : s'il est encore « nouveau »
+ * (`user_knowledge.is_new`), il est marqué comme lu.
  */
 export function useTheme(id: number): Remote<ThemeContent | null> {
   return useRemote(
@@ -69,6 +73,11 @@ export function useTheme(id: number): Remote<ThemeContent | null> {
         with: ["kanjis"],
         extra: { with_knowledge: true },
       })
+      const knowledge = record.user_knowledge
+      if (knowledge?.is_new) {
+        // Échec non bloquant : le thème reste « nouveau » jusqu'à la prochaine ouverture.
+        markRead(knowledge.id).catch(() => {})
+      }
       const kanjiIds = themeKanjiIds(record)
 
       const [words, kanjis, rules, sentences, exercises] = await Promise.all([

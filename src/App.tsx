@@ -17,6 +17,7 @@ import { RegisterScreen } from "@/features/auth/RegisterScreen"
 import ForgotPasswordScreen from "@/features/auth/ForgotPasswordScreen"
 import ResetPasswordScreen from "@/features/auth/ResetPasswordScreen"
 import UnsubscribeScreen from "@/features/auth/UnsubscribeScreen"
+import ResumeScreen from "@/features/auth/ResumeScreen"
 import { TermsScreen } from "@/features/legal/TermsScreen"
 import { DashboardView } from "@/features/dashboard/DashboardView"
 import { VocabView } from "@/features/vocab/VocabView"
@@ -79,6 +80,7 @@ export default function App() {
         {/* Accessible même connecté : le lien reçu par e-mail doit toujours aboutir. */}
         <Route path="/reset-password" element={<ResetPasswordScreen />} />
         <Route path="/desabonnement" element={<UnsubscribeScreen />} />
+        <Route path="/reprise" element={<ResumeScreen />} />
         <Route path="/cgu" element={<TermsScreen />} />
         <Route
           element={authed ? <AppLayout /> : <Navigate to="/login" replace />}
@@ -108,7 +110,7 @@ export default function App() {
 
 function DashboardRoute() {
   const navigate = useNavigate()
-  const { runExercise, runTraining, user, knowledgeVersion } =
+  const { runExercise, runTraining, user, reloadUser, knowledgeVersion } =
     useOutletContext<AppLayoutContext>()
   const weeklyTheme = useLatestTheme()
   const itemStats = useItemStatsRemote()
@@ -117,6 +119,11 @@ function DashboardRoute() {
   return (
     <DashboardView
       firstName={user?.firstName}
+      onVacation={user ? user.onVacation : null}
+      onVacationChange={() => {
+        reloadUser()
+        weeklyTheme.reload()
+      }}
       weeklyTheme={weeklyTheme}
       itemStats={itemStats}
       onOpenTheme={(id) => navigate(`/themes/${id}`)}

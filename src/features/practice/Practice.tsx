@@ -16,6 +16,7 @@ import {
   type TrainingRequest,
   type TrainingText,
 } from "@/features/practice/training"
+import PracticeIcon from "@/features/practice/PracticeIcon"
 
 /** Glyphe décoratif par sujet (repli : 練習). */
 const SUBJECT_JP: Record<string, string> = {
@@ -245,23 +246,17 @@ export function Practice({
           {view === "subject" && !error && !loading && (
             <WizardStep title="Sur quoi veux-tu travailler ?">
               {subjects.map((o) => (
-                <button
+                <WizardCard
                   key={o.subject}
+                  icon={<PracticeIcon name={o.subject} />}
+                  glyph={SUBJECT_JP[o.subject] ?? "練習"}
+                  label={o.name}
                   onClick={() => {
                     setSubjectUid(o.subject)
                     setMode(null)
                     setStep("mode")
                   }}
-                  className="group text-left border border-line p-4 hover:border-ember bg-ink/40 transition-colors flex items-center gap-4"
-                >
-                  <span className="jp text-2xl text-fog group-hover:text-ember transition-colors w-24 shrink-0">
-                    {SUBJECT_JP[o.subject] ?? "練習"}
-                  </span>
-                  <span className="flex-1 text-base">{o.name}</span>
-                  <span className="text-ember transition-transform group-hover:translate-x-1">
-                    →
-                  </span>
-                </button>
+                />
               ))}
             </WizardStep>
           )}
@@ -272,42 +267,31 @@ export function Practice({
               onBack={() => setStep("subject")}
             >
               {subject.modes.map((o) => (
-                <button
+                <WizardCard
                   key={o.name}
+                  icon={<span className="jp text-xl whitespace-nowrap">{modeJp(o)}</span>}
+                  label={o.name}
                   onClick={() => {
                     setMode(o)
                     setStep("focus")
                   }}
-                  className="group text-left border border-line p-5 hover:border-ember bg-ink/40 transition-colors flex items-center gap-4"
-                >
-                  <span className="jp text-xl text-ember w-24 shrink-0">
-                    {modeJp(o)}
-                  </span>
-                  <span className="flex-1 text-base">{o.name}</span>
-                  <span className="text-ember transition-transform group-hover:translate-x-1">
-                    →
-                  </span>
-                </button>
+                />
               ))}
             </WizardStep>
           )}
 
           {view === "focus" && subject && !error && !loading && (
             <WizardStep
-              title="Sur quoi faire le focus ?"
+              title="Sur quoi veux-tu te concentrer ?"
               onBack={() => setStep("mode")}
             >
               {subject.focus.map((o) => (
-                <button
+                <WizardCard
                   key={o.focus}
+                  icon={<PracticeIcon name={o.focus} />}
+                  label={o.name}
                   onClick={() => start(o)}
-                  className="group text-left border border-line p-4 hover:border-ember bg-ink/40 transition-colors flex items-center gap-4"
-                >
-                  <span className="flex-1 text-base">{o.name}</span>
-                  <span className="text-ember transition-transform group-hover:translate-x-1">
-                    →
-                  </span>
-                </button>
+                />
               ))}
             </WizardStep>
           )}
@@ -564,7 +548,45 @@ function WizardStep({
         </button>
       )}
       <h2 className="display text-2xl font-800 mb-5">{title}</h2>
-      <div className="space-y-3">{children}</div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">{children}</div>
     </div>
+  )
+}
+
+/** Carte de choix de l'assistant : icône, intitulé, glyphe décoratif. */
+function WizardCard({
+  icon,
+  label,
+  glyph,
+  onClick,
+}: {
+  icon: ReactNode
+  label: string
+  /** Glyphe japonais en filigrane. */
+  glyph?: string
+  onClick: () => void
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="group relative overflow-hidden text-left w-full border border-line bg-ink/40 p-4 flex items-center gap-4 transition-all duration-150 hover:border-ember hover:bg-ember/5 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:border-ember"
+    >
+      <span className="absolute inset-x-0 top-0 h-0.5 bg-ember opacity-0 group-hover:opacity-100 transition-opacity" />
+      {glyph && (
+        <span
+          aria-hidden
+          className="jp absolute -right-1 -bottom-3 text-6xl font-900 text-chalk/[0.04] group-hover:text-ember/10 transition-colors pointer-events-none select-none"
+        >
+          {glyph}
+        </span>
+      )}
+      <span className="min-w-16 h-16 px-3 shrink-0 grid place-items-center border border-line-bright bg-panel-2 text-ember group-hover:border-ember transition-colors">
+        {icon}
+      </span>
+      <span className="relative flex-1 flex items-center justify-between gap-3">
+        <span className="text-base font-500 leading-snug">{label}</span>
+        <span className="text-ember shrink-0 transition-transform group-hover:translate-x-1">→</span>
+      </span>
+    </button>
   )
 }

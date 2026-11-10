@@ -318,6 +318,22 @@ export class SyloConnector {
   }
 
   /**
+   * `POST /users/resume` : sort du mode vacances et active le thème annoncé, à
+   * partir du jeton du lien reçu par e-mail (400 `invalid_resume_token` s'il est
+   * invalide). Route publique : le jeton fait office d'authentification.
+   */
+  async resumeFromVacation(payload: {
+    token: string
+  }): Promise<{ theme_id: number }> {
+    const { data } = await this.request<{ theme_id: number }>(
+      "POST",
+      `${this.authPrefix}/resume`,
+      { body: payload, auth: false },
+    )
+    return data
+  }
+
+  /**
    * Déconnexion. Sylo n'exposant pas de route dédiée, on se contente d'effacer le
    * token de la session locale.
    */
