@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react"
-import { recordAnswer } from "@/lib/knowledge"
+import { markMastered, recordAnswer } from "@/lib/knowledge"
 import { resultMessage } from "@/lib/quiz"
 import { SyloApiError, syloErrorMessage } from "@/lib/sylo"
 import {
@@ -20,6 +20,7 @@ export function ExerciseRunner({
   onRecorded,
   onFinished,
   onClose,
+  masterOnSuccess = false,
 }: {
   /** Exercice et ses questions, `null` tant que rien n'est chargé. */
   detail: ExerciseDetail | null
@@ -31,6 +32,8 @@ export function ExerciseRunner({
   /** Appelé en arrivant au bilan, quel que soit le score. */
   onFinished?: () => void
   onClose: () => void
+  /** Exercice réussi -> passe directement en « Maîtrisé » (page Exercices uniquement). */
+  masterOnSuccess?: boolean
 }) {
   return (
     <div className="fixed inset-0 z-50 bg-ink/90 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4">
@@ -43,6 +46,7 @@ export function ExerciseRunner({
             onRecorded={onRecorded}
             onFinished={onFinished}
             onClose={onClose}
+            masterOnSuccess={masterOnSuccess}
           />
         ) : (
           <>
@@ -107,11 +111,13 @@ function Run({
   onRecorded,
   onFinished,
   onClose,
+  masterOnSuccess,
 }: {
   detail: ExerciseDetail
   onRecorded?: () => void
   onFinished?: () => void
   onClose: () => void
+  masterOnSuccess?: boolean
 }) {
   const { exercise: e, items } = detail
   const [idx, setIdx] = useState(0)
@@ -127,12 +133,17 @@ function Run({
 
   const record = (score: number) => {
     setSave({ state: "saving" })
+    const success = score / total >= SUCCESS_RATE
     recordAnswer({
       knowledgeId,
       entityName: EXERCISE_ENTITY,
       entityId: e.id,
-      success: score / total >= SUCCESS_RATE,
+      success,
     })
+      .then(async (id) => {
+        if (success && masterOnSuccess) await markMastered(id)
+        return id
+      })
       .then((id) => {
         // La ligne créée au premier passage sert aux suivants (« Recommencer »).
         setKnowledgeId(id)

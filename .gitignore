@@ -21,3 +21,4 @@ info.md
 # beside it.
 /.plugins/
 /.opencode-skills/
+.pnpm-store/

@@ -47,6 +47,14 @@ export async function markRead(knowledgeId: number): Promise<void> {
   await sylo.call("POST", `/user_knowledges/${knowledgeId}/read`)
 }
 
+/**
+ * Passe directement un élément en « Maîtrisé » (`POST /user_knowledges/<id>/master`) :
+ * le backend relève `corrects` juste assez pour atteindre la maîtrise.
+ */
+export async function markMastered(knowledgeId: number): Promise<void> {
+  await sylo.call("POST", `/user_knowledges/${knowledgeId}/master`)
+}
+
 /** Marque une tâche du programme comme faite (`POST /user_knowledges/<id>/done`). */
 export async function markTaskDone(ref: ProgramTaskRef): Promise<void> {
   await sylo.call("POST", `/user_knowledges/${ref.knowledgeId}/done`, {

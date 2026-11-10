@@ -257,6 +257,8 @@ export function AppLayout() {
           onRecorded={() => setKnowledgeVersion((v) => v + 1)}
           onFinished={finishTask}
           onClose={closeRunner}
+          // Lancé depuis la page Exercices (liste ou détail) : une réussite vaut maîtrise.
+          masterOnSuccess={/^\/exercises(\/|$)/.test(location.pathname)}
         />
       )}
       {wordId != null && (
@@ -315,11 +317,13 @@ function RunnerOverlay({
   onRecorded,
   onFinished,
   onClose,
+  masterOnSuccess,
 }: {
   id: number
   onRecorded: () => void
   onFinished: () => void
   onClose: () => void
+  masterOnSuccess: boolean
 }) {
   const { data, loading, error, reload } = useExercise(id)
   return (
@@ -332,6 +336,7 @@ function RunnerOverlay({
       onRecorded={onRecorded}
       onFinished={onFinished}
       onClose={onClose}
+      masterOnSuccess={masterOnSuccess}
     />
   )
 }

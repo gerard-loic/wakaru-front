@@ -5,6 +5,8 @@ export interface StatPanel {
   id: keyof ItemStats
   label: string
   jp: string
+  /** Route de la page listant les items de la famille. */
+  to: string
   total: number
   known: number
   learning: number
@@ -12,14 +14,14 @@ export interface StatPanel {
 }
 
 /** Familles affichées, dans l'ordre. Les thèmes n'ont pas de maîtrise propre. */
-const FAMILIES: Pick<StatPanel, "id" | "label" | "jp">[] = [
-  { id: "words", label: "Vocabulaire", jp: "単語" },
-  { id: "hiraganas", label: "Hiragana", jp: "ひらがな" },
-  { id: "katakanas", label: "Katakana", jp: "カタカナ" },
-  { id: "kanjis", label: "Kanji", jp: "漢字" },
-  { id: "grammar_rules", label: "Grammaire", jp: "文法" },
-  { id: "sentences", label: "Phrases", jp: "例文" },
-  { id: "exercises", label: "Exercices", jp: "練習" },
+const FAMILIES: Pick<StatPanel, "id" | "label" | "jp" | "to">[] = [
+  { id: "words", label: "Vocabulaire", jp: "単語", to: "/vocab" },
+  { id: "hiraganas", label: "Hiragana", jp: "ひらがな", to: "/hiragana" },
+  { id: "katakanas", label: "Katakana", jp: "カタカナ", to: "/katakana" },
+  { id: "kanjis", label: "Kanji", jp: "漢字", to: "/kanji" },
+  { id: "grammar_rules", label: "Grammaire", jp: "文法", to: "/grammar" },
+  { id: "sentences", label: "Phrases", jp: "例文", to: "/sentences" },
+  { id: "exercises", label: "Exercices", jp: "練習", to: "/exercises" },
 ]
 
 /**

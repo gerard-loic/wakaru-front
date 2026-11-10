@@ -1,4 +1,4 @@
-import { createKnowledge, markRead } from "@/lib/knowledge"
+import { createKnowledge, markRead, recordAnswer } from "@/lib/knowledge"
 import { SyloApiError, sf, sylo } from "@/lib/sylo"
 import { useRemote, type Remote } from "@/lib/useRemote"
 import {
@@ -35,9 +35,10 @@ export type UseWord = Omit<Remote<WordDetail | null>, "data"> & {
  * liste : le mot peut être ouvert depuis n'importe quelle interface. Ne touche
  * pas à l'affichage.
  *
- * Un mot d'une nature non travaillée (`partofspeech.is_worked_on` faux) ne passe
- * jamais par les exercices : le charger pour l'afficher vaut lecture, il n'est
- * plus « nouveau ». `onRead` est appelé une fois ce marquage enregistré.
+ * Première consultation (`user_knowledge.is_new`) : le mot est marqué comme lu,
+ * quelle que soit sa nature, et s'il est encore « nouveau » (maîtrise `new`) on
+ * lui compte un premier succès. Le marquage de lecture garantit que ce succès
+ * n'est compté qu'une fois. `onRead` est appelé une fois ce marquage enregistré.
  */
 export function useWord(id: number, onRead?: () => void): UseWord {
   const { data, ...remote } = useRemote<WordDetail | null>(
@@ -61,8 +62,8 @@ export function useWord(id: number, onRead?: () => void): UseWord {
         loadComposition(id),
       ])
       const word = toWord(record, themeNames)
-      if (!word.partOfSpeech?.isWorkedOn && word.isNew) {
-        markWordRead(record, onRead)
+      if (word.isNew) {
+        markWordRead(record, word.mastery === "new", onRead)
       }
       return {
         word,
@@ -79,13 +80,30 @@ export function useWord(id: number, onRead?: () => void): UseWord {
 /** Mots en cours de marquage : le double chargement de StrictMode ne doit pas créer deux lignes. */
 const marking = new Set<number>()
 
-/** Échec non bloquant : le mot reste « nouveau » jusqu'à la prochaine ouverture. */
-function markWordRead(record: WordRecord, onRead?: () => void) {
+/**
+ * Marque le mot comme lu, puis lui compte un premier succès si `firstSuccess`.
+ * Échec non bloquant : le mot reste « nouveau » jusqu'à la prochaine ouverture.
+ */
+function markWordRead(
+  record: WordRecord,
+  firstSuccess: boolean,
+  onRead?: () => void,
+) {
   if (marking.has(record.id)) return
   marking.add(record.id)
   const knowledgeId = record.user_knowledge?.id
   Promise.resolve(knowledgeId ?? createKnowledge(WORD_ENTITY, record.id))
-    .then(markRead)
+    .then(async (id) => {
+      await markRead(id)
+      if (firstSuccess) {
+        await recordAnswer({
+          knowledgeId: id,
+          entityName: WORD_ENTITY,
+          entityId: record.id,
+          success: true,
+        })
+      }
+    })
     .then(onRead, (err) => console.error("Marquage du mot comme lu impossible", err))
     .finally(() => marking.delete(record.id))
 }

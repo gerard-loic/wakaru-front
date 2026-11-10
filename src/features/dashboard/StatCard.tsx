@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 import { STATUS } from "./status"
 import type { StatPanel } from "./statPanels"
 
@@ -11,7 +12,11 @@ export function StatCard({ s }: { s: StatPanel }) {
   ]
   const pct = s.total ? Math.round((s.known / s.total) * 100) : 0
   return (
-    <div className="border border-line bg-panel p-5">
+    <Link
+      to={s.to}
+      aria-label={`${s.label} — ${pct}% maîtrisé`}
+      className="block border border-line bg-panel p-5 transition-colors hover:border-ember/60 focus-visible:outline-2 focus-visible:outline-ember"
+    >
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
           <span className="jp text-2xl text-fog">{s.jp}</span>
@@ -60,6 +65,6 @@ export function StatCard({ s }: { s: StatPanel }) {
           </div>
         ))}
       </div>
-    </div>
+    </Link>
   )
 }
