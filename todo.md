@@ -6,7 +6,7 @@ Version 1.2.0
 - [x] placer les 3 exercices dans les lessons
 - [x] placer au moins un sujet du thème chaque jour
 - [x] Problème des sons
-- [ ] Modification du tableau noir
+- [x] Modification du tableau noir
 
 Version 1.3.0
 - [ ] Mise en place des trophées : 

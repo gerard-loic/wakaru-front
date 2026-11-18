@@ -9,6 +9,15 @@ export interface Release {
 /** Historique des versions, la plus récente en premier. */
 export const RELEASES: Release[] = [
   {
+    version: "1.2.0",
+    date: "2026-11-18",
+    changes: [
+      "Ajout d'un mode révision pour les exercices",
+      "Favoriser le travail du thème dans les exercices proposés durant la semaine",
+      "Amélioration du tableau noir"
+    ],
+  },
+  {
     version: "1.1.0",
     date: "2026-11-10",
     changes: [
