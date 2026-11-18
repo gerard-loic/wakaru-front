@@ -1,4 +1,19 @@
-import { useEffect, useRef, useState, type PointerEvent } from "react"
+import {
+  useEffect,
+  useRef,
+  useState,
+  type PointerEvent,
+  type ReactNode,
+} from "react"
+import {
+  IconEraser,
+  IconEye,
+  IconEyeOff,
+  IconSwap,
+  IconTemplate,
+  IconTrash,
+  IconUndo,
+} from "@/components/icons"
 import { SectionHead } from "@/components/SectionHead"
 import ModelPicker from "@/features/blackboard/ModelPicker"
 
@@ -47,8 +62,73 @@ function paint(canvas: HTMLCanvasElement, strokes: Stroke[]) {
   }
 }
 
-const ACTION_CLASS =
-  "mono text-[11px] uppercase tracking-[0.08em] px-3 py-2.5 border border-line text-fog transition-colors enabled:hover:text-chalk enabled:hover:border-line-bright disabled:opacity-40"
+function ToolGroup({
+  label,
+  jp,
+  aside,
+  children,
+}: {
+  label: string
+  jp: string
+  aside?: ReactNode
+  children: ReactNode
+}) {
+  return (
+    <div role="group" aria-label={label} className="min-w-0">
+      <div className="mb-1.5 flex items-baseline gap-2">
+        <span className="mono text-[10px] uppercase tracking-[0.14em] text-fog">
+          {label}
+        </span>
+        <span className="jp text-[11px] text-fog/60">{jp}</span>
+        {aside}
+      </div>
+      <div className="flex divide-x divide-line border border-line bg-panel">
+        {children}
+      </div>
+    </div>
+  )
+}
+
+function ToolButton({
+  icon,
+  label,
+  onClick,
+  disabled,
+  pressed,
+  danger,
+}: {
+  icon: ReactNode
+  label: string
+  onClick: () => void
+  disabled?: boolean
+  pressed?: boolean
+  danger?: boolean
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-pressed={pressed}
+      className={`group flex flex-1 items-center justify-center gap-2 px-3 py-2.5 mono text-[11px] uppercase tracking-[0.08em] whitespace-nowrap transition-colors disabled:opacity-35 enabled:hover:bg-panel-2 ${
+        pressed
+          ? "text-ember"
+          : danger
+            ? "text-fog enabled:hover:text-ember-soft"
+            : "text-fog enabled:hover:text-chalk"
+      }`}
+    >
+      <span
+        className={`size-4 shrink-0 transition-colors ${
+          pressed ? "" : "text-fog/70 group-enabled:group-hover:text-current"
+        }`}
+      >
+        {icon}
+      </span>
+      {label}
+    </button>
+  )
+}
 
 export default function BlackboardView() {
   const boardRef = useRef<HTMLDivElement>(null)
@@ -58,6 +138,7 @@ export default function BlackboardView() {
   const [size, setSize] = useState(0)
   const [model, setModel] = useState<string | null>(null)
   const [picking, setPicking] = useState(false)
+  const [modelHidden, setModelHidden] = useState(false)
 
   useEffect(() => {
     const board = boardRef.current
@@ -112,6 +193,7 @@ export default function BlackboardView() {
 
   const pickModel = (char: string) => {
     setModel(char)
+    setModelHidden(false)
     setStrokes([])
     setPicking(false)
   }
@@ -119,39 +201,55 @@ export default function BlackboardView() {
   return (
     <div>
       <SectionHead title="Tableau noir" jp="黒板">
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => setPicking(true)}
-            className={ACTION_CLASS}
+        <div className="grid gap-4 sm:flex sm:items-end">
+          <ToolGroup
+            label="Modèle"
+            jp="手本"
+            aside={
+              model && (
+                <span className="jp ml-auto text-[12px] leading-none text-chalk/80">
+                  {model}
+                </span>
+              )
+            }
           >
-            {model ? "Changer le modèle" : "Charger un modèle"}
-          </button>
-          {model && (
-            <button
-              type="button"
-              onClick={() => setModel(null)}
-              className={ACTION_CLASS}
-            >
-              Retirer le modèle
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={() => setStrokes((prev) => prev.slice(0, -1))}
-            disabled={strokes.length === 0}
-            className={ACTION_CLASS}
-          >
-            Annuler le trait
-          </button>
-          <button
-            type="button"
-            onClick={() => setStrokes([])}
-            disabled={strokes.length === 0}
-            className={ACTION_CLASS}
-          >
-            Tout effacer
-          </button>
+            <ToolButton
+              icon={model ? <IconSwap /> : <IconTemplate />}
+              label={model ? "Changer" : "Charger"}
+              onClick={() => setPicking(true)}
+            />
+            {model && (
+              <>
+                <ToolButton
+                  icon={modelHidden ? <IconEyeOff /> : <IconEye />}
+                  label={modelHidden ? "Afficher" : "Masquer"}
+                  onClick={() => setModelHidden((prev) => !prev)}
+                  pressed={modelHidden}
+                />
+                <ToolButton
+                  icon={<IconTrash />}
+                  label="Retirer"
+                  onClick={() => setModel(null)}
+                  danger
+                />
+              </>
+            )}
+          </ToolGroup>
+          <ToolGroup label="Tracé" jp="筆">
+            <ToolButton
+              icon={<IconUndo />}
+              label="Annuler"
+              onClick={() => setStrokes((prev) => prev.slice(0, -1))}
+              disabled={strokes.length === 0}
+            />
+            <ToolButton
+              icon={<IconEraser />}
+              label="Effacer"
+              onClick={() => setStrokes([])}
+              disabled={strokes.length === 0}
+              danger
+            />
+          </ToolGroup>
         </div>
       </SectionHead>
 
@@ -161,7 +259,7 @@ export default function BlackboardView() {
       >
         <div className="absolute inset-y-0 left-1/2 border-l border-dashed border-line-bright" />
         <div className="absolute inset-x-0 top-1/2 border-t border-dashed border-line-bright" />
-        {model && (
+        {model && !modelHidden && (
           // `pb` : le carré du glyphe est 0,056 em sous le centre de la ligne dans Noto Sans JP.
           <div
             aria-hidden="true"

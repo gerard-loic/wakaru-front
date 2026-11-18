@@ -1,3 +1,5 @@
+import type { ReactNode } from "react"
+
 export function IconDash() {
   return (
     <svg
@@ -307,5 +309,83 @@ export function IconClose() {
     >
       <path d="M6 6l12 12M18 6L6 18" />
     </svg>
+  )
+}
+
+/* Pictogrammes compacts des barres d'outils (taille pilotée par le parent via `size-*`). */
+function ToolIcon({ children }: { children: ReactNode }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="size-full"
+    >
+      {children}
+    </svg>
+  )
+}
+export function IconTemplate() {
+  return (
+    <ToolIcon>
+      <rect x="3" y="3" width="18" height="18" />
+      <path d="M12 8v8M8 12h8" />
+    </ToolIcon>
+  )
+}
+export function IconSwap() {
+  return (
+    <ToolIcon>
+      <path d="M4 8h13l-3-3" />
+      <path d="M20 16H7l3 3" />
+    </ToolIcon>
+  )
+}
+export function IconEye() {
+  return (
+    <ToolIcon>
+      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
+      <circle cx="12" cy="12" r="3" />
+    </ToolIcon>
+  )
+}
+export function IconEyeOff() {
+  return (
+    <ToolIcon>
+      <path d="M10.6 5.1A10 10 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-2.2 3.2" />
+      <path d="M6.6 6.6A17 17 0 0 0 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.4-1.6" />
+      <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
+      <path d="M3 3l18 18" />
+    </ToolIcon>
+  )
+}
+export function IconTrash() {
+  return (
+    <ToolIcon>
+      <path d="M4 7h16" />
+      <path d="M9 7V4h6v3" />
+      <path d="M6 7l1 13h10l1-13" />
+    </ToolIcon>
+  )
+}
+export function IconUndo() {
+  return (
+    <ToolIcon>
+      <path d="M9 14L4 9l5-5" />
+      <path d="M4 9h11a5 5 0 0 1 0 10h-3" />
+    </ToolIcon>
+  )
+}
+export function IconEraser() {
+  return (
+    <ToolIcon>
+      <path d="M7 21h13" />
+      <path d="M5.5 15.5l9-9a2 2 0 0 1 2.8 0l1.2 1.2a2 2 0 0 1 0 2.8L11 18H8z" />
+      <path d="M10 11l4 4" />
+    </ToolIcon>
   )
 }

@@ -262,9 +262,10 @@ function ThemeDetailLoader({ id }: { id: number }) {
 }
 
 function KanjiRoute() {
-  const { openPractice, canPractice, openKanji } =
+  const { openPractice, canPractice, openKanji, knowledgeVersion } =
     useOutletContext<AppLayoutContext>()
   const list = useKanjis()
+  useReloadOn(knowledgeVersion, list.reload)
   return (
     <KanjiView
       kanjis={list.kanjis}
@@ -377,9 +378,10 @@ function ExerciseDetailLoader({ id }: { id: number }) {
 }
 
 function SentencesRoute() {
-  const { openPractice, canPractice, openSentence } =
+  const { openPractice, canPractice, openSentence, knowledgeVersion } =
     useOutletContext<AppLayoutContext>()
   const list = useSentences()
+  useReloadOn(knowledgeVersion, list.reload)
   return (
     <SentencesView
       sentences={list.sentences}

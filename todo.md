@@ -1,13 +1,19 @@
 Version 1.2.0
 - [x] Problématique de la date du thème incorrecte
-- [ ] Mode apprentissage révision
-- [ ] Kanji et phrases restent en nouveau 
+- [x] Mode apprentissage révision
+- [x] Kanji et phrases restent en nouveau 
 - [x] problème des significations identiques 
 - [x] placer les 3 exercices dans les lessons
 - [x] placer au moins un sujet du thème chaque jour
 - [x] Problème des sons
+- [ ] Modification du tableau noir
 
-
+Version 1.3.0
+- [ ] Mise en place des trophées : 
+      - 100% des hiraganas su
+      - 100% des katakanas su
+      - 100 mots su
+      - 100 kanjis su
 
 - [x] Dynamiser les informations personnelles en bas
 - [x] Changer la police des puces
