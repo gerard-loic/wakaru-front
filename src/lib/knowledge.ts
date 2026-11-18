@@ -47,6 +47,41 @@ export async function markRead(knowledgeId: number): Promise<void> {
   await sylo.call("POST", `/user_knowledges/${knowledgeId}/read`)
 }
 
+/** Éléments en cours de marquage : le double chargement de StrictMode ne doit pas créer deux lignes. */
+const marking = new Set<string>()
+
+/**
+ * Première consultation d'un élément encore « nouveau » : le marque comme lu
+ * et lui compte un premier succès, ce qui le passe « en cours ». Crée sa ligne
+ * `user_knowledge` s'il n'en a pas. Échec non bloquant : l'élément reste
+ * « nouveau » jusqu'à la prochaine ouverture. `onRead` est appelé une fois le
+ * marquage enregistré.
+ */
+export function markFirstView({
+  entityName,
+  entityId,
+  knowledge,
+  onRead,
+}: {
+  /** Nom de l'entité Sylo (`"kanji"`…). */
+  entityName: string
+  entityId: number
+  /** `user_knowledge` de l'élément, ou `null` s'il n'a jamais été travaillé. */
+  knowledge: { id: number; is_new?: boolean } | null | undefined
+  onRead?: () => void
+}): void {
+  const key = `${entityName}:${entityId}`
+  if (marking.has(key)) return
+  marking.add(key)
+  Promise.resolve(knowledge?.id ?? createKnowledge(entityName, entityId))
+    .then(async (id) => {
+      if (knowledge?.is_new !== false) await markRead(id)
+      await recordAnswer({ knowledgeId: id, entityName, entityId, success: true })
+    })
+    .then(onRead, (err) => console.error(`Marquage de ${key} comme lu impossible`, err))
+    .finally(() => marking.delete(key))
+}
+
 /**
  * Passe directement un élément en « Maîtrisé » (`POST /user_knowledges/<id>/master`) :
  * le backend relève `corrects` juste assez pour atteindre la maîtrise.

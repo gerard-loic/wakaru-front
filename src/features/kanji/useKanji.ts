@@ -1,8 +1,10 @@
+import { markFirstView } from "@/lib/knowledge"
 import { SyloApiError, sf, sylo } from "@/lib/sylo"
 import { READING_KIND_ORDER } from "@/lib/readingKinds"
 import { parseStringList } from "@/lib/syloValues"
 import { useRemote, type Remote } from "@/lib/useRemote"
 import {
+  KANJI_ENTITY,
   KANJI_RELATIONS,
   WITH_KNOWLEDGE,
   toKanji,
@@ -56,8 +58,12 @@ interface ExampleWordRecord {
  * Détail d'un kanji via Sylo (`GET /kanjis/<id>`) et ses mots-exemples, issus
  * de ses compositions. Indépendant de la liste : le kanji peut être ouvert
  * depuis n'importe quelle interface. Ne touche pas à l'affichage.
+ *
+ * Consultation d'un kanji encore « nouveau » (maîtrise `new`) : il est marqué
+ * comme lu et on lui compte un premier succès, ce qui le passe « en cours ».
+ * `onRead` est appelé une fois ce marquage enregistré.
  */
-export function useKanji(id: number): UseKanji {
+export function useKanji(id: number, onRead?: () => void): UseKanji {
   const { data, ...remote } = useRemote<KanjiDetail | null>(
     async () => {
       const [record, types] = await Promise.all([
@@ -80,8 +86,17 @@ export function useKanji(id: number): UseKanji {
           .listAll<CompositionTypeRecord>("composition_types")
           .catch(() => []),
       ])
+      const kanji = toKanji(record)
+      if (kanji.mastery === "new") {
+        markFirstView({
+          entityName: KANJI_ENTITY,
+          entityId: record.id,
+          knowledge: record.user_knowledge,
+          onRead,
+        })
+      }
       const examples = await loadExamples(record.compositions ?? [], types)
-      return { kanji: toKanji(record), examples }
+      return { kanji, examples }
     },
     null,
     [id],

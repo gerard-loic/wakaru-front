@@ -1,10 +1,10 @@
 Version 1.2.0
-- [ ] Problématique de la date du thème incorrecte
+- [x] Problématique de la date du thème incorrecte
 - [ ] Mode apprentissage révision
 - [ ] Kanji et phrases restent en nouveau 
-- [ ] problème des significations identiques 
-- [ ] placer les 3 exercices dans les lessons
-- [ ] placer au moins un sujet du thème chaque jour
+- [x] problème des significations identiques 
+- [x] placer les 3 exercices dans les lessons
+- [x] placer au moins un sujet du thème chaque jour
 - [x] Problème des sons
 
 

@@ -1,6 +1,8 @@
+import { markFirstView } from "@/lib/knowledge"
 import { SyloApiError, sf, sylo } from "@/lib/sylo"
 import { useRemote, type Remote } from "@/lib/useRemote"
 import {
+  SENTENCE_ENTITY,
   SENTENCE_RELATIONS,
   TOKEN_RELATIONS,
   WITH_KNOWLEDGE,
@@ -27,8 +29,12 @@ export type UseSentence = Omit<Remote<SentenceDetail | null>, "data"> & {
  * Détail d'une phrase via Sylo : `GET /sentences/<id>` et ses éléments
  * (`QUERY /sentence_tokens`). Indépendant de la liste : la phrase peut être
  * ouverte depuis n'importe quelle interface. Ne touche pas à l'affichage.
+ *
+ * Consultation d'une phrase encore « nouvelle » (maîtrise `new`) : elle est
+ * marquée comme lue et on lui compte un premier succès, ce qui la passe
+ * « en cours ». `onRead` est appelé une fois ce marquage enregistré.
  */
-export function useSentence(id: number): UseSentence {
+export function useSentence(id: number, onRead?: () => void): UseSentence {
   const { data, ...remote } = useRemote<SentenceDetail | null>(
     async () => {
       const [record, tokens] = await Promise.all([
@@ -48,7 +54,16 @@ export function useSentence(id: number): UseSentence {
           }),
         loadTokens(id),
       ])
-      return { sentence: toSentence(record), tokens }
+      const sentence = toSentence(record)
+      if (sentence.mastery === "new") {
+        markFirstView({
+          entityName: SENTENCE_ENTITY,
+          entityId: record.id,
+          knowledge: record.user_knowledge,
+          onRead,
+        })
+      }
+      return { sentence, tokens }
     },
     null,
     [id],

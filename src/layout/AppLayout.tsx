@@ -275,6 +275,7 @@ export function AppLayout() {
       {kanjiId != null && (
         <KanjiOverlay
           id={kanjiId}
+          onRead={() => setKnowledgeVersion((v) => v + 1)}
           onOpenWord={openWord}
           onClose={closeKanji}
         />
@@ -289,6 +290,7 @@ export function AppLayout() {
       {sentenceId != null && (
         <SentenceOverlay
           id={sentenceId}
+          onRead={() => setKnowledgeVersion((v) => v + 1)}
           onOpenWord={openWord}
           onClose={closeSentence}
         />
@@ -379,14 +381,17 @@ function WordOverlay({
 /** Glue `useKanji` -> `KanjiModal`. */
 function KanjiOverlay({
   id,
+  onRead,
   onOpenWord,
   onClose,
 }: {
   id: number
+  /** Appelé quand le kanji vient d'être marqué comme lu. */
+  onRead: () => void
   onOpenWord: (wordId: number) => void
   onClose: () => void
 }) {
-  const { detail, loading, error, reload } = useKanji(id)
+  const { detail, loading, error, reload } = useKanji(id, onRead)
   return (
     <KanjiModal
       // Pendant le passage d'un kanji à l'autre, n'affiche pas l'ancien.
@@ -427,14 +432,17 @@ function RuleOverlay({
 /** Glue `useSentence` -> `SentenceModal`. */
 function SentenceOverlay({
   id,
+  onRead,
   onOpenWord,
   onClose,
 }: {
   id: number
+  /** Appelé quand la phrase vient d'être marquée comme lue. */
+  onRead: () => void
   onOpenWord: (wordId: number) => void
   onClose: () => void
 }) {
-  const { detail, loading, error, reload } = useSentence(id)
+  const { detail, loading, error, reload } = useSentence(id, onRead)
   return (
     <SentenceModal
       // Pendant le passage d'une phrase à l'autre, n'affiche pas l'ancienne.

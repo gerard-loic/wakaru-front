@@ -24,7 +24,7 @@ export interface KanjiRecord {
   themes: { id: number; name: string | null; deleted_at: string | null }[] | null
   compositions?: CompositionRecord[] | null
   /** Présent avec `with_knowledge` : progression de l'utilisateur connecté. */
-  user_knowledge: { type: string | null } | null
+  user_knowledge: { id: number; type: string | null; is_new?: boolean } | null
 }
 
 /** Segment d'un mot rattaché au kanji : lecture utilisée dans ce mot. */
@@ -62,6 +62,9 @@ export interface KanjiEntry {
   /** Maîtrise de l'utilisateur connecté (`user_knowledge.type`). */
   mastery: Mastery
 }
+
+/** Nom de l'entité dans `user_knowledges.entity_name` : le modèle Sylo, pas la table. */
+export const KANJI_ENTITY = "kanji"
 
 /** Relations à charger pour construire un `KanjiEntry`. */
 export const KANJI_RELATIONS = ["level", "themes"]

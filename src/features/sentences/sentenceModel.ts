@@ -14,7 +14,7 @@ export interface SentenceRecord {
   theme: { id: number; name: string | null; deleted_at: string | null } | null
   level: { uid: string; name: string } | null
   /** Présent avec `with_knowledge` : progression de l'utilisateur connecté. */
-  user_knowledge: { type: string | null } | null
+  user_knowledge: { id: number; type: string | null; is_new?: boolean } | null
 }
 
 /** Enregistrement brut renvoyé par `QUERY /sentence_tokens` (avec `TOKEN_RELATIONS`). */
@@ -75,6 +75,9 @@ export const SENTENCE_RELATIONS = ["theme", "level"]
 
 /** Relations à charger pour construire un `SentenceToken`. */
 export const TOKEN_RELATIONS = ["sentence_token_role", "word"]
+
+/** Nom de l'entité dans `user_knowledges.entity_name` : le modèle Sylo, pas la table. */
+export const SENTENCE_ENTITY = "sentence"
 
 /** Paramètre propre au backend : ajoute `user_knowledge` à chaque phrase. */
 export const WITH_KNOWLEDGE = { with_knowledge: true }
