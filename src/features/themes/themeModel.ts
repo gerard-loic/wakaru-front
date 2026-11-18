@@ -13,7 +13,7 @@ export interface ThemeRecord {
   image: string | null
   image_credit: string | null
   image_licence: string | null
-  created_at: string | null
+  publicated_at: string | null
   /** Présent avec `with_knowledge` : progression de l'utilisateur connecté. */
   user_knowledge?: { id: number; details: unknown; is_new?: boolean } | null
 }
@@ -26,7 +26,10 @@ export interface ThemeEntry {
   image: string | null
   /** Crédit et licence de l'image, réunis pour l'affichage. */
   imageCredit: string | null
-  /** Date de création (ISO), ou `null` si inconnue. */
+  /**
+   * Date de publication (ISO), ou `null` si inconnue. Début de la semaine du
+   * programme.
+   */
   date: string | null
   /** Programme de la semaine, vide sans `with_knowledge`. */
   program: WeekProgram
@@ -45,7 +48,7 @@ export function toTheme(r: ThemeRecord): ThemeEntry {
     description: r.description?.trim() || null,
     image: r.image?.trim() || null,
     imageCredit: credit || null,
-    date: r.created_at,
+    date: r.publicated_at,
     program: parseProgram(r.user_knowledge),
     isNew: r.user_knowledge?.is_new ?? false,
   }

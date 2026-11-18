@@ -12,14 +12,14 @@ import {
 /** Onglet « Programme » d'un thème : les tâches de chaque jour de la semaine. */
 export function WeekPlan({
   program,
-  createdAt,
+  publishedAt,
   isWeekly,
   onExercise,
   onTraining,
 }: {
   program: WeekProgram
-  /** Date de création du thème (ISO) : début de la semaine du programme. */
-  createdAt: string | null
+  /** Date de publication du thème (ISO) : début de la semaine du programme. */
+  publishedAt: string | null
   /** Thème de la semaine ? `null` tant que ce n'est pas connu. */
   isWeekly: boolean | null
   onExercise: (id: number, task: ProgramTaskRef) => void
@@ -28,7 +28,7 @@ export function WeekPlan({
   const all = program.flat()
   const done = all.filter((t) => t.done).length
   // Hors de 0..6 une fois la semaine écoulée (tout est passé) ou pas commencée.
-  const todayIdx = programDayIndexSince(createdAt)
+  const todayIdx = programDayIndexSince(publishedAt)
 
   if (all.length === 0) {
     return (

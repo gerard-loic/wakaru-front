@@ -53,23 +53,23 @@ const MS_PER_DAY = 24 * 60 * 60 * 1000
 
 /**
  * Index dans `WeekProgram` du jour `date`, pour un programme démarré la
- * semaine de `createdAt` : son `day1` est le premier jour de programme
+ * semaine de `publishedAt` (publication du thème) : son `day1` est le premier jour de programme
  * (`FIRST_DAY`) tombant ce jour-là ou avant. Contrairement à
  * `programDayIndex`, le résultat n'est pas borné : négatif avant le début,
- * 7 ou plus une fois la semaine écoulée. Sans date de création, retombe sur
+ * 7 ou plus une fois la semaine écoulée. Sans date de publication, retombe sur
  * la semaine courante.
  */
 export function programDayIndexSince(
-  createdAt: string | null,
+  publishedAt: string | null,
   date = new Date(),
   firstDay = FIRST_DAY,
 ): number {
-  const created = createdAt ? new Date(createdAt) : null
-  if (!created || Number.isNaN(created.getTime())) {
+  const published = publishedAt ? new Date(publishedAt) : null
+  if (!published || Number.isNaN(published.getTime())) {
     return programDayIndex(date, firstDay)
   }
-  const start = startOfDay(created)
-  start.setDate(start.getDate() - programDayIndex(created, firstDay))
+  const start = startOfDay(published)
+  start.setDate(start.getDate() - programDayIndex(published, firstDay))
   // Arrondi : absorbe les changements d'heure (journées de 23 h ou 25 h).
   return Math.round((startOfDay(date).getTime() - start.getTime()) / MS_PER_DAY)
 }
