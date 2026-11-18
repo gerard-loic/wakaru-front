@@ -14,7 +14,8 @@ export const RELEASES: Release[] = [
     changes: [
       "Ajout d'un mode révision pour les exercices",
       "Favoriser le travail du thème dans les exercices proposés durant la semaine",
-      "Amélioration du tableau noir"
+      "Amélioration du tableau noir",
+      "Nouveau mode d'exercice de dessin des Hiraganas et katakanas (experimental)"
     ],
   },
   {
