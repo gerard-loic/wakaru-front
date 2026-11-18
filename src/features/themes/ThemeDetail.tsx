@@ -6,7 +6,6 @@ import { Empty } from "@/components/Empty"
 import { LevelBadge } from "@/components/Badges"
 import { MasteryDot } from "@/components/Mastery"
 import { wordDotLevel } from "@/features/vocab/wordModel"
-import { SpeakBtn } from "@/components/SpeakBtn"
 import { KanjiCard } from "@/features/kanji/KanjiCard"
 import { RuleRow } from "@/features/grammar/RuleRow"
 import { SentenceCard } from "@/features/sentences/SentencesView"
@@ -199,7 +198,6 @@ export function ThemeDetail({
                   </span>
                   {w.level && <LevelBadge level={w.level} />}
                 </button>
-                <SpeakBtn text={w.reading || w.writing} />
               </div>
             ))}
           </div>

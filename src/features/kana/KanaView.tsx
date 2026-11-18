@@ -1,4 +1,3 @@
-import { speak } from "@/lib/speak"
 import type { Mastery } from "@/lib/mastery"
 import { SectionHead } from "@/components/SectionHead"
 import { ExerciseCta } from "@/components/ExerciseCta"
@@ -132,22 +131,21 @@ export function KanaView({
               )}
               <div className={GRID[section.columns ?? 5]}>
                 {section.items.map((k) => (
-                  <button
+                  <div
                     key={k.id}
-                    onClick={() => speak(k.kana)}
-                    className="group relative aspect-square border border-line bg-panel hover:border-ember hover:bg-panel-2 transition-colors flex flex-col items-center justify-center gap-1"
+                    className="relative aspect-square border border-line bg-panel flex flex-col items-center justify-center gap-1"
                   >
                     <MasteryDot
                       level={k.mastery}
                       className="absolute top-1.5 right-1.5 sm:top-2.5 sm:right-2.5"
                     />
-                    <span className="jp text-2xl sm:text-4xl leading-none group-hover:text-ember transition-colors">
+                    <span className="jp text-2xl sm:text-4xl leading-none">
                       {k.kana}
                     </span>
                     <span className="mono text-[10px] sm:text-xs text-fog uppercase tracking-[0.1em]">
                       {k.romaji}
                     </span>
-                  </button>
+                  </div>
                 ))}
               </div>
             </section>

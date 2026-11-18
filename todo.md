@@ -1,3 +1,13 @@
+- [ ] Problématique de la date du thème incorrecte
+- [ ] Mode apprentissage révision
+- [ ] Kanji et phrases restent en nouveau 
+- [ ] problème des significations identiques 
+- [ ] placer les 3 exercices dans les lessons
+- [ ] placer au moins un sujet du thème chaque jour
+- [ ] Problème des sons
+
+
+
 - [x] Dynamiser les informations personnelles en bas
 - [x] Changer la police des puces
 - [x] Supprimer les numéros des parties
@@ -23,17 +33,29 @@
 - [x] Exercices : cas des kanjis et de l'aléatoire
 - [x] Revoir le fonctionnement du new dans la grammaire
 - [x] Responsive
-- [ ] Aide Romanji
-- [ ] Aide kanji
-- [ ] Recherche plus efficace
 - [x] Dans les exercices les titres au dessus
 - [x] Revoir les filtres pour les mots (liste)
 - [x] Modification mot de passe
 - [x] Modification infos personnelles
-- [ ] Lien désinscription email
+- [x] Lien désinscription email
 - [x] Assignation à la créa d'un nouveau thème et souci ?
 - [x] Dans les règles de grammaire ajouter la catégorie
 - [x] Problème de l'image du thème trop étroite
 - [x] ne pas faire d'exercice quand c'est pas le bon jour
 - [x] Filtre de thème
 
+- [ ] Aide Romanji
+- [ ] Aide kanji
+- [ ] Recherche plus efficace
+
+- [ ] Intégrer version et what's new ?
+- [x] Mode progressif kanjis
+- [x] Doublons exercices
+- [x] Mode vacance
+- [x] Représentation des modes plus sympa
+- [x] Lien direct depuis le thème vers les éléments
+- [x] Des qu'un mot est consulté il est en apprentissage c'est déjà un succès
+- [x] Moins de phrases dans les exercices
+- [x] dans les exercices, quand on en a fini un avec succès il est maîtrisé 
+- [x] Consultation d'un élément = 1 niveau
+- [x] Nouveau thème : disparait dès consulté
