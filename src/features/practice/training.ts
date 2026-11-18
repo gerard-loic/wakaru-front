@@ -13,12 +13,22 @@ export interface TrainingProposition extends TrainingText {
   id: number
 }
 
-/** Une étape de question : retrouver `to` parmi les propositions. */
+/** Bonne réponse fournie avec la question (mode `drawing` : caractère à dessiner). */
+export interface TrainingAnswer {
+  id: number
+  text: string
+}
+
+/**
+ * Une étape de question : retrouver `to` parmi les propositions, ou, en mode
+ * `drawing`, dessiner `answer.text` (sans propositions).
+ */
 export interface TrainingQuestion {
   to: TrainingElement
   /** Consigne affichée au-dessus de l'élément, fournie par l'API. */
   instructions: string
   propositions: TrainingProposition[]
+  answer?: TrainingAnswer
 }
 
 /** Élément travaillé : montré (`text`), puis une question par élément à retrouver. */
@@ -38,7 +48,7 @@ export interface TrainingRequest {
   focus: string
 }
 
-const TRAINING_ELEMENTS: string[] = ["french", "char", "reading"]
+const TRAINING_ELEMENTS: string[] = ["french", "char", "reading", "drawing"]
 
 /** Entraînement -> paramètre d'URL `?training=words:french:char,reading:theme`. */
 export function trainingToParam(r: TrainingRequest): string {
@@ -77,6 +87,15 @@ export function isCorrect(
   proposition: TrainingProposition,
 ): boolean {
   return proposition.id === item.id
+}
+
+/** Bonne réponse d'une étape, pour la rappeler aux étapes suivantes. */
+export function questionAnswer(
+  item: TrainingItem,
+  question: TrainingQuestion,
+): TrainingText | undefined {
+  if (question.answer) return { text: question.answer.text, reading: "" }
+  return question.propositions.find((p) => isCorrect(item, p))
 }
 
 /**

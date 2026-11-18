@@ -389,3 +389,12 @@ export function IconEraser() {
     </ToolIcon>
   )
 }
+export function IconTarget() {
+  return (
+    <ToolIcon>
+      <circle cx="12" cy="12" r="9" />
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 1v4M12 19v4M1 12h4M19 12h4" />
+    </ToolIcon>
+  )
+}

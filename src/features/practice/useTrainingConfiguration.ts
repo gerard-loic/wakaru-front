@@ -2,8 +2,8 @@ import type { QType } from "@/lib/quiz"
 import { sylo } from "@/lib/sylo"
 import { useRemote, type Remote } from "@/lib/useRemote"
 
-/** Élément d'un item travaillé : traduction, graphie ou lecture. */
-export type TrainingElement = "french" | "char" | "reading"
+/** Élément d'un item travaillé : traduction, graphie, lecture ou graphie à dessiner. */
+export type TrainingElement = "french" | "char" | "reading" | "drawing"
 
 /** Sens d'entraînement : ce qui est montré -> ce qu'il faut retrouver (dans l'ordre). */
 export interface TrainingMode {

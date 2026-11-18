@@ -11,12 +11,20 @@ import {
 import {
   fetchTraining,
   isCorrect,
+  questionAnswer,
   recordTrainingSuccesses,
   type TrainingItem,
   type TrainingRequest,
   type TrainingText,
 } from "@/features/practice/training"
 import PracticeIcon from "@/features/practice/PracticeIcon"
+import ExperimentalTag from "@/components/ExperimentalTag"
+import DrawingPad from "@/features/blackboard/DrawingPad"
+import {
+  scoreTrace,
+  type Stroke,
+  type TraceScore,
+} from "@/features/blackboard/traceScore"
 
 /** Glyphe décoratif par sujet (repli : 練習). */
 const SUBJECT_JP: Record<string, string> = {
@@ -32,6 +40,7 @@ const ELEMENT_JP: Record<TrainingElement, string> = {
   french: "仏",
   char: "字",
   reading: "読",
+  drawing: "書",
 }
 
 function modeJp(mode: TrainingMode): string {
@@ -93,6 +102,10 @@ export function Practice({
   const [stage, setStage] = useState(0) // index de la question dans l'item
   const [picked, setPicked] = useState<number | null>(null) // index de la proposition
   const [revealed, setRevealed] = useState(false)
+  // Mode `drawing` : tracé en cours, puis son évaluation une fois validé.
+  const [strokes, setStrokes] = useState<Stroke[]>([])
+  const [traced, setTraced] = useState<TraceScore | null>(null)
+  const [tracing, setTracing] = useState(false)
   const [itemOk, setItemOk] = useState(true) // toutes les étapes de l'item justes
   const [succeeded, setSucceeded] = useState<TrainingItem[]>([])
   const [save, setSave] = useState<{
@@ -114,6 +127,8 @@ export function Practice({
   const question = item?.questions[stage]
   const multiStage = (item?.questions.length ?? 0) > 1
   const pickedProp = picked != null ? question?.propositions[picked] : null
+  const drawing = question?.to === "drawing"
+  const answered = pickedProp != null || traced != null
   const score = succeeded.length
 
   const start = (f: TrainingFocus) => {
@@ -126,6 +141,8 @@ export function Practice({
     setStage(0)
     setPicked(null)
     setRevealed(false)
+    setStrokes([])
+    setTraced(null)
     setItemOk(true)
     setSucceeded([])
     setSave(null)
@@ -160,6 +177,19 @@ export function Practice({
     if (!isCorrect(item, question.propositions[i])) setItemOk(false)
   }
 
+  const submitDrawing = async () => {
+    const target = question?.answer?.text
+    if (!target || strokes.length === 0 || traced || tracing) return
+    setTracing(true)
+    try {
+      const result = await scoreTrace(target, strokes)
+      setTraced(result)
+      if (!result.passed) setItemOk(false)
+    } finally {
+      setTracing(false)
+    }
+  }
+
   const finish = (ok: TrainingItem[]) => {
     setStep("result")
     onFinished?.()
@@ -184,6 +214,8 @@ export function Practice({
   const next = () => {
     setPicked(null)
     setRevealed(false)
+    setStrokes([])
+    setTraced(null)
     // étape suivante de la même question
     if (stage + 1 < item.questions.length) {
       setStage((s) => s + 1)
@@ -271,6 +303,10 @@ export function Practice({
                   key={o.name}
                   icon={<span className="jp text-xl whitespace-nowrap">{modeJp(o)}</span>}
                   label={o.name}
+                  {...(o.element_to.includes("drawing") && {
+                    tag: <ExperimentalTag />,
+                    hint: "Correction automatique du tracé, encore approximative",
+                  })}
                   onClick={() => {
                     setMode(o)
                     setStep("focus")
@@ -334,7 +370,7 @@ export function Practice({
                 <JpText value={item} size="prompt" />
                 {/* réponses des étapes précédentes */}
                 {item.questions.slice(0, stage).map((q, i) => {
-                  const answer = q.propositions.find((p) => isCorrect(item, p))
+                  const answer = questionAnswer(item, q)
                   return (
                     answer && (
                       <div key={i} className="mt-3 text-ember">
@@ -345,7 +381,16 @@ export function Practice({
                 })}
               </div>
 
-              {!revealed ? (
+              {drawing ? (
+                <DrawingQuestion
+                  answer={question.answer?.text ?? ""}
+                  strokes={strokes}
+                  onStrokes={setStrokes}
+                  result={traced}
+                  checking={tracing}
+                  onSubmit={submitDrawing}
+                />
+              ) : !revealed ? (
                 <div className="text-center">
                   <p className="mono text-[11px] text-fog uppercase tracking-[0.1em] mb-4">
                     Cherche la réponse de mémoire, puis affiche les
@@ -388,7 +433,7 @@ export function Practice({
                 </div>
               )}
 
-              {pickedProp && (
+              {answered && (
                 <button
                   onClick={next}
                   className="mono text-sm uppercase tracking-[0.1em] w-full mt-6 py-3.5 bg-ember text-ink font-600 hover:bg-ember-soft transition-colors"
@@ -462,6 +507,115 @@ export function Practice({
           )}
         </div>
       </div>
+    </div>
+  )
+}
+
+/**
+ * Largeur de la zone de dessin (carré) : aussi grande que possible jusqu'à 28rem,
+ * en laissant la place à la consigne et aux boutons dans la hauteur de l'écran.
+ */
+const PAD_WIDTH = "w-[min(100%,28rem,max(16rem,calc(100dvh-26rem)))]"
+
+/** Question en mode `drawing` : dessiner le caractère, puis voir l'évaluation du tracé. */
+function DrawingQuestion({
+  answer,
+  strokes,
+  onStrokes,
+  result,
+  checking,
+  onSubmit,
+}: {
+  answer: string
+  strokes: Stroke[]
+  onStrokes: (strokes: Stroke[]) => void
+  result: TraceScore | null
+  checking: boolean
+  onSubmit: () => void
+}) {
+  const toolCls =
+    "mono text-[11px] uppercase tracking-[0.1em] flex-1 py-3 border border-line text-fog enabled:hover:border-ember enabled:hover:text-ember disabled:opacity-35 transition-colors"
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <DrawingPad
+        strokes={strokes}
+        onStroke={(stroke) => onStrokes([...strokes, stroke])}
+        diff={result?.diff}
+        disabled={result != null}
+        className={PAD_WIDTH}
+      >
+        {result && (
+          <div
+            role="status"
+            className={
+              "pointer-events-none absolute left-2 top-2 border bg-panel/90 px-3 py-2 " +
+              (result.passed ? "border-emerald-500" : "border-red-500")
+            }
+          >
+            <span
+              className={
+                "display text-2xl leading-none " +
+                (result.passed ? "text-emerald-300" : "text-red-300")
+              }
+            >
+              {result.score}
+              <span className="text-base">%</span>
+            </span>
+          </div>
+        )}
+      </DrawingPad>
+
+      {result ? (
+        <div className={`${PAD_WIDTH} text-center`}>
+          <div
+            className={
+              "mono text-[11px] uppercase tracking-[0.12em] " +
+              (result.passed ? "text-emerald-300" : "text-red-300")
+            }
+          >
+            {result.passed
+              ? "Bien tracé !"
+              : result.complete
+                ? "Pas assez proche du modèle"
+                : "Une partie du caractère manque"}
+          </div>
+          <div className="mt-3 flex items-center justify-center gap-3">
+            <span className="mono text-[10px] uppercase tracking-[0.14em] text-fog">
+              Modèle
+            </span>
+            <span className="jp text-5xl leading-none">{answer}</span>
+          </div>
+        </div>
+      ) : (
+        <div className={`${PAD_WIDTH} flex gap-2`}>
+          <button
+            onClick={() => onStrokes(strokes.slice(0, -1))}
+            disabled={strokes.length === 0}
+            className={toolCls}
+          >
+            Annuler
+          </button>
+          <button
+            onClick={() => onStrokes([])}
+            disabled={strokes.length === 0}
+            className={toolCls}
+          >
+            Effacer
+          </button>
+          <button
+            onClick={onSubmit}
+            disabled={strokes.length === 0 || checking || !answer}
+            className="mono text-[11px] uppercase tracking-[0.1em] flex-1 py-3 bg-ember text-ink font-600 enabled:hover:bg-ember-soft disabled:opacity-35 transition-colors"
+          >
+            Valider
+          </button>
+        </div>
+      )}
+
+      <p className="w-full flex items-center justify-center gap-2 mono text-[10px] text-fog/80">
+        <ExperimentalTag className="shrink-0" />
+        <span>Correction approximative, basée sur la forme du tracé</span>
+      </p>
     </div>
   )
 }
@@ -557,11 +711,17 @@ function WizardStep({
 function WizardCard({
   icon,
   label,
+  tag,
+  hint,
   glyph,
   onClick,
 }: {
   icon: ReactNode
   label: string
+  /** Étiquette affichée à côté de l'intitulé (expérimental…). */
+  tag?: ReactNode
+  /** Précision en petit sous l'intitulé. */
+  hint?: string
   /** Glyphe japonais en filigrane. */
   glyph?: string
   onClick: () => void
@@ -584,7 +744,15 @@ function WizardCard({
         {icon}
       </span>
       <span className="relative flex-1 flex items-center justify-between gap-3">
-        <span className="text-base font-500 leading-snug">{label}</span>
+        <span className="flex flex-col gap-1">
+          <span className="flex flex-wrap items-center gap-2">
+            <span className="text-base font-500 leading-snug">{label}</span>
+            {tag}
+          </span>
+          {hint && (
+            <span className="mono text-[10px] leading-snug text-fog">{hint}</span>
+          )}
+        </span>
         <span className="text-ember shrink-0 transition-transform group-hover:translate-x-1">→</span>
       </span>
     </button>
